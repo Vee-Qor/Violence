@@ -25,7 +25,7 @@ AVQueenOfPain::AVQueenOfPain()
     GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
     GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-    GetCharacterMovement()->bUseControllerDesiredRotation = true;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
@@ -33,10 +33,10 @@ AVQueenOfPain::AVQueenOfPain()
     SpringArm->bUsePawnControlRotation = true;
     SpringArm->bDoCollisionTest = true;
     SpringArm->TargetArmLength = 300.0f;
-    SpringArm->SocketOffset = FVector(0.0f, 0.0f, 50.0f);
+    SpringArm->SocketOffset = FVector(0.0f, 0.0f, 75.0f);
     SpringArm->bEnableCameraLag = true;
     SpringArm->CameraLagSpeed = 5.0f;
-    SpringArm->CameraLagMaxDistance = 10.0f;
+    SpringArm->CameraLagMaxDistance = 100.0f;
 
     FollowCamera = CreateDefaultSubobject<UCameraComponent>("Follow Camera");
     FollowCamera->SetupAttachment(SpringArm);
@@ -53,6 +53,7 @@ void AVQueenOfPain::SetupPlayerInputComponent(class UInputComponent* PlayerInput
     {
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AVQueenOfPain::HandleMoveInput);
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &AVQueenOfPain::HandleLookInput);
+        VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &AVQueenOfPain::Jump);
     }
 }
 
