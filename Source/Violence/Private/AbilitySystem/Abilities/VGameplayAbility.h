@@ -6,12 +6,14 @@
 #include "Abilities/GameplayAbility.h"
 #include "VGameplayAbility.generated.h"
 
-/**
- * 
- */
+class AVCharacter;
+
 UCLASS()
 class UVGameplayAbility : public UGameplayAbility
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+public:
+    AVCharacter* GetVCharacterFromActorInfo() const;
+
 };

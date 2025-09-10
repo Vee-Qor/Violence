@@ -12,10 +12,7 @@ UVGA_PrimaryAttack::UVGA_PrimaryAttack()
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
     SetAssetTags(VGameplayTags::Player_Ability_PrimaryAttack.GetTag().GetSingleTagContainer());
-
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
-    BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Status_InAir);
-
     ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_Attacking);
 }
 
@@ -46,13 +43,16 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
         UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontagesTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
             PrimaryAttackMontages[CurrentAttackCount]);
-        PlayPrimaryAttackMontagesTask->OnCompleted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-        PlayPrimaryAttackMontagesTask->OnCancelled.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-        PlayPrimaryAttackMontagesTask->OnBlendOut.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-        PlayPrimaryAttackMontagesTask->OnInterrupted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-        PlayPrimaryAttackMontagesTask->ReadyForActivation();
+        if (PlayPrimaryAttackMontagesTask)
+        {
+            PlayPrimaryAttackMontagesTask->OnCompleted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
+            PlayPrimaryAttackMontagesTask->OnCancelled.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
+            PlayPrimaryAttackMontagesTask->OnBlendOut.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
+            PlayPrimaryAttackMontagesTask->OnInterrupted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
+            PlayPrimaryAttackMontagesTask->ReadyForActivation();
 
-        CurrentAttackCount++;
+            CurrentAttackCount++;
+        }
     }
 }
 

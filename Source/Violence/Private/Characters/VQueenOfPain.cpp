@@ -54,7 +54,6 @@ void AVQueenOfPain::SetupPlayerInputComponent(class UInputComponent* PlayerInput
     {
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AVQueenOfPain::HandleMoveInput);
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &AVQueenOfPain::HandleLookInput);
-        VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &AVQueenOfPain::Jump);
 
         VInputComponent->BindAbilityInputAction(InputConfig, this, &AVQueenOfPain::HandleAbilityInputPressed, &AVQueenOfPain::HandleAbilityInputReleased);
     }
