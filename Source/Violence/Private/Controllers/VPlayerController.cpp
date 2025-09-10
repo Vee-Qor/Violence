@@ -3,3 +3,24 @@
 
 #include "Controllers/VPlayerController.h"
 
+#include "Characters/VCharacter.h"
+
+void AVPlayerController::OnPossess(APawn* InPawn)
+{
+    Super::OnPossess(InPawn);
+
+    if (AVCharacter* VCharacter = Cast<AVCharacter>(InPawn))
+    {
+        VCharacter->ServerInitial();
+    }
+}
+
+void AVPlayerController::AcknowledgePossession(class APawn* InPawn)
+{
+    Super::AcknowledgePossession(InPawn);
+
+    if (AVCharacter* VCharacter = Cast<AVCharacter>(InPawn))
+    {
+        VCharacter->ClientInitial();
+    }
+}
