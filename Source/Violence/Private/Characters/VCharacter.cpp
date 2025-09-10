@@ -25,7 +25,8 @@ void AVCharacter::OnRep_PlayerState()
 void AVCharacter::ServerInitial()
 {
     VAbilitySystemComponent->InitAbilityActorInfo(this, this);
-    VAbilitySystemComponent->ApplyInitialEffects(DefaultAbilitySet->GetGameplayEffects());
+    VAbilitySystemComponent->ApplyInitialEffects(DefaultAbilitySet->GetInitialEffects());
+    VAbilitySystemComponent->GiveInitialAbilities(DefaultAbilitySet->GetInitialAbilities());
 }
 
 void AVCharacter::ClientInitial()
@@ -35,10 +36,17 @@ void AVCharacter::ClientInitial()
 
 UAbilitySystemComponent* AVCharacter::GetAbilitySystemComponent() const
 {
+    return GetVAbilitySystemComponent();
+}
+
+UVAbilitySystemComponent* AVCharacter::GetVAbilitySystemComponent() const
+{
     return VAbilitySystemComponent;
 }
 
 void AVCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    check(DefaultAbilitySet);
 }

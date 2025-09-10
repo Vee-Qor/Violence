@@ -23,6 +23,7 @@ public:
     void ClientInitial();
 
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+    virtual UVAbilitySystemComponent* GetVAbilitySystemComponent() const;
 
 protected:
     virtual void BeginPlay() override;

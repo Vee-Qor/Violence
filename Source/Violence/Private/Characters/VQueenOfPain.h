@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/VCharacter.h"
+#include "GameplayTagContainer.h"
 #include "VQueenOfPain.generated.h"
 
 class UVInputConfig;
@@ -20,7 +21,7 @@ public:
     AVQueenOfPain();
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     virtual void PawnClientRestart() override;
-    
+
 private:
     UPROPERTY(VisibleDefaultsOnly, Category = "Camera")
     USpringArmComponent* SpringArm;
@@ -33,4 +34,6 @@ private:
 
     void HandleMoveInput(const FInputActionValue& InputActionValue);
     void HandleLookInput(const FInputActionValue& InputActionValue);
+    void HandleAbilityInputPressed(const FGameplayTag InputTag);
+    void HandleAbilityInputReleased(const FGameplayTag InputTag);
 };

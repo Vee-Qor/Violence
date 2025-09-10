@@ -35,7 +35,12 @@ public:
 
     const UInputAction* FindInputActionByTag(const FGameplayTag& InputTag) const;
 
+    FORCEINLINE TArray<FVInputActionMapping> GetAbilityInputActions() const { return AbilityInputActions; }
+
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     TArray<FVInputActionMapping> NativeInputActions;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    TArray<FVInputActionMapping> AbilityInputActions;
 };

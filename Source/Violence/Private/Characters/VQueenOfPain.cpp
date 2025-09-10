@@ -3,6 +3,7 @@
 
 #include "Characters/VQueenOfPain.h"
 
+#include "AbilitySystem/VAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/Input/VInputComponent.h"
@@ -54,6 +55,8 @@ void AVQueenOfPain::SetupPlayerInputComponent(class UInputComponent* PlayerInput
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AVQueenOfPain::HandleMoveInput);
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &AVQueenOfPain::HandleLookInput);
         VInputComponent->BindNativeInputAction(InputConfig, VGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &AVQueenOfPain::Jump);
+
+        VInputComponent->BindAbilityInputAction(InputConfig, this, &AVQueenOfPain::HandleAbilityInputPressed, &AVQueenOfPain::HandleAbilityInputReleased);
     }
 }
 
@@ -109,5 +112,21 @@ void AVQueenOfPain::HandleLookInput(const FInputActionValue& InputActionValue)
     if (LookVector.X != 0.0f)
     {
         AddControllerYawInput(LookVector.X);
+    }
+}
+
+void AVQueenOfPain::HandleAbilityInputPressed(const FGameplayTag InputTag)
+{
+    if (UVAbilitySystemComponent* OwnerVAbilitySystemComponent = GetVAbilitySystemComponent())
+    {
+        OwnerVAbilitySystemComponent->HandleAbilityInputPressed(InputTag);
+    }
+}
+
+void AVQueenOfPain::HandleAbilityInputReleased(const FGameplayTag InputTag)
+{
+    if (UVAbilitySystemComponent* OwnerVAbilitySystemComponent = GetVAbilitySystemComponent())
+    {
+        OwnerVAbilitySystemComponent->HandleAbilityInputReleased(InputTag);
     }
 }
