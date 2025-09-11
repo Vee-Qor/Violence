@@ -3,8 +3,8 @@
 
 #include "AbilitySystem/VAbilitySystemComponent.h"
 
-#include "VCoreTypes.h"
 #include "AbilitySystem/Abilities/VGameplayAbility.h"
+#include "VCoreTypes.h"
 
 void UVAbilitySystemComponent::GiveInitialAbilities(const TArray<FVAbilitySet>& Abilities)
 {

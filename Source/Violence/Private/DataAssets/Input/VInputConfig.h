@@ -30,14 +30,15 @@ class UVInputConfig : public UDataAsset
     GENERATED_BODY()
 
 public:
+    const UInputAction* FindInputActionByTag(const FGameplayTag& InputTag) const;
+
+    FORCEINLINE UInputMappingContext* GetDefaultInputMappingContext() const { return DefaultInputMappingContext; }
+    FORCEINLINE const TArray<FVInputActionMapping>& GetAbilityInputActions() const { return AbilityInputActions; }
+
+private:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputMappingContext* DefaultInputMappingContext;
 
-    const UInputAction* FindInputActionByTag(const FGameplayTag& InputTag) const;
-
-    FORCEINLINE TArray<FVInputActionMapping> GetAbilityInputActions() const { return AbilityInputActions; }
-
-private:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     TArray<FVInputActionMapping> NativeInputActions;
 

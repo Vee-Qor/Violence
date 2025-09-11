@@ -15,6 +15,8 @@ void UVAnimInstance::NativeInitializeAnimation()
     if (OwnerVCharacter)
     {
         OwnerCharacterMovement = OwnerVCharacter->GetCharacterMovement();
+        LastRotation = OwnerVCharacter->GetActorRotation();
+        LastAimRotation = OwnerVCharacter->GetBaseAimRotation();
     }
 }
 
@@ -31,13 +33,14 @@ void UVAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     FRotator CurrentRotation = OwnerVCharacter->GetActorRotation();
     FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentRotation, LastRotation);
     LastRotation = CurrentRotation;
-    LeanAngle = UKismetMathLibrary::FInterpTo(LeanAngle, DeltaRotation.Yaw / DeltaSeconds, DeltaSeconds, 1.0f);
+    LeanAngle = UKismetMathLibrary::FInterpTo(LeanAngle, DeltaRotation.Yaw / DeltaSeconds, DeltaSeconds, LeanAngleInterpSpeed);
 
     FRotator CurrentAimRotation = OwnerVCharacter->GetBaseAimRotation();
     AimRotationOffset = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, CurrentRotation);
+
     FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrentAimRotation, LastAimRotation);
     LastAimRotation = CurrentAimRotation;
-    SlopeAngle = UKismetMathLibrary::FInterpTo(SlopeAngle, DeltaAimRotation.Pitch / DeltaSeconds, DeltaSeconds, 1.0f);
+    SlopeAngle = UKismetMathLibrary::FInterpTo(SlopeAngle, DeltaAimRotation.Pitch / DeltaSeconds, DeltaSeconds, SlopeAngleInterpSpeed);
 
     bIsJumping = OwnerCharacterMovement->IsFalling() && !OwnerCharacterMovement->IsMovingOnGround();
 }

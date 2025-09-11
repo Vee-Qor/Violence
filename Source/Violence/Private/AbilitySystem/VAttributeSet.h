@@ -23,6 +23,7 @@ public:
     ATTRIBUTE_ACCESSORS(UVAttributeSet, MaxHealth);
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
 private:
     UPROPERTY(ReplicatedUsing = OnRep_Health)
     FGameplayAttributeData Health;

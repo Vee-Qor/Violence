@@ -43,6 +43,6 @@ void UVInputComponent::BindAbilityInputAction(const UVInputConfig* InputConfig, 
         if (!ActionMapping.IsValid()) continue;
 
         BindAction(ActionMapping.InputAction, ETriggerEvent::Started, Object, InputPressedFunc, ActionMapping.InputTag);
-        BindAction(ActionMapping.InputAction, ETriggerEvent::Started, Object, InputPressedFunc, ActionMapping.InputTag);
+        BindAction(ActionMapping.InputAction, ETriggerEvent::Completed, Object, InputPressedFunc, ActionMapping.InputTag);
     }
 }

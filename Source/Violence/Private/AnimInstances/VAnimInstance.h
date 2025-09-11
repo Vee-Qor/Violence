@@ -49,14 +49,21 @@ private:
     UPROPERTY()
     UCharacterMovementComponent* OwnerCharacterMovement;
 
+
     float WalkingSpeed;
     bool bHasAcceleration;
+
+    UPROPERTY(EditDefaultsOnly, Category = "View")
+    float LeanAngleInterpSpeed = 1.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "View")
+    float SlopeAngleInterpSpeed = 1.0f;
 
     float LeanAngle;
     float SlopeAngle;
     FRotator LastRotation;
     FRotator LastAimRotation;
     FRotator AimRotationOffset;
-    
+
     bool bIsJumping = false;
 };

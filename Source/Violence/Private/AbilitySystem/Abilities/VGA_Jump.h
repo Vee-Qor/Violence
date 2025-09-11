@@ -21,5 +21,5 @@ public:
 
 private:
     UFUNCTION()
-    void OnLandedCharacter(const FHitResult& Hit);
+    void OnCharacterLanded(const FHitResult& Hit);
 };

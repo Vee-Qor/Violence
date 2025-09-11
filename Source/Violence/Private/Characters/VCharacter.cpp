@@ -24,6 +24,8 @@ void AVCharacter::OnRep_PlayerState()
 
 void AVCharacter::ServerInitial()
 {
+    check(DefaultAbilitySet);
+    
     VAbilitySystemComponent->InitAbilityActorInfo(this, this);
     VAbilitySystemComponent->ApplyInitialEffects(DefaultAbilitySet->GetInitialEffects());
     VAbilitySystemComponent->GiveInitialAbilities(DefaultAbilitySet->GetInitialAbilities());
@@ -47,6 +49,4 @@ UVAbilitySystemComponent* AVCharacter::GetVAbilitySystemComponent() const
 void AVCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
-    check(DefaultAbilitySet);
 }

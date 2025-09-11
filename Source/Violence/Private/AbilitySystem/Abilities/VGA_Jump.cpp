@@ -4,7 +4,6 @@
 #include "AbilitySystem/Abilities/VGA_Jump.h"
 
 #include "Characters/VCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "VGameplayTags.h"
 
 UVGA_Jump::UVGA_Jump()
@@ -20,9 +19,9 @@ bool UVGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
     const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
     AVCharacter* VCharacter = GetVCharacterFromActorInfo();
-    if (VCharacter && VCharacter->CanJump())
+    if (!VCharacter || !VCharacter->CanJump())
     {
-        return true;
+        return false;
     }
 
     return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
@@ -46,12 +45,12 @@ void UVGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
         {
             VCharacter->Jump();
             VCharacter->LandedDelegate.RemoveAll(this);
-            VCharacter->LandedDelegate.AddDynamic(this, &UVGA_Jump::OnLandedCharacter);
+            VCharacter->LandedDelegate.AddDynamic(this, &UVGA_Jump::OnCharacterLanded);
         }
     }
 }
 
-void UVGA_Jump::OnLandedCharacter(const FHitResult& Hit)
+void UVGA_Jump::OnCharacterLanded(const FHitResult& Hit)
 {
     K2_EndAbility();
 }

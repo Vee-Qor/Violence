@@ -7,10 +7,10 @@
 
 AVCharacter* UVGameplayAbility::GetVCharacterFromActorInfo() const
 {
-    if (CurrentActorInfo)
+    if (CurrentActorInfo && CurrentActorInfo->AvatarActor.IsValid())
     {
-
-        return Cast<AVCharacter>(CurrentActorInfo->AvatarActor);
+        return Cast<AVCharacter>(CurrentActorInfo->AvatarActor.Get());
     }
+
     return nullptr;
 }
