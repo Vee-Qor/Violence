@@ -11,29 +11,29 @@ AVCharacter::AVCharacter()
 {
     PrimaryActorTick.bCanEverTick = false;
 
-    VAbilitySystemComponent = CreateDefaultSubobject<UVAbilitySystemComponent>("VAbility System Component");
-    VAttributeSet = CreateDefaultSubobject<UVAttributeSet>("VAttribute Set");
+    AbilitySystemComponent = CreateDefaultSubobject<UVAbilitySystemComponent>("VAbility System Component");
+    AttributeSet = CreateDefaultSubobject<UVAttributeSet>("VAttribute Set");
 }
 
 void AVCharacter::OnRep_PlayerState()
 {
     Super::OnRep_PlayerState();
 
-    VAbilitySystemComponent->InitAbilityActorInfo(this, this);
+    AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 void AVCharacter::ServerInitial()
 {
     check(DefaultAbilitySet);
-    
-    VAbilitySystemComponent->InitAbilityActorInfo(this, this);
-    VAbilitySystemComponent->ApplyInitialEffects(DefaultAbilitySet->GetInitialEffects());
-    VAbilitySystemComponent->GiveInitialAbilities(DefaultAbilitySet->GetInitialAbilities());
+
+    AbilitySystemComponent->InitAbilityActorInfo(this, this);
+    AbilitySystemComponent->ApplyInitialEffects(DefaultAbilitySet->GetInitialEffects());
+    AbilitySystemComponent->GiveInitialAbilities(DefaultAbilitySet->GetInitialAbilities());
 }
 
 void AVCharacter::ClientInitial()
 {
-    VAbilitySystemComponent->InitAbilityActorInfo(this, this);
+    AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 UAbilitySystemComponent* AVCharacter::GetAbilitySystemComponent() const
@@ -43,7 +43,7 @@ UAbilitySystemComponent* AVCharacter::GetAbilitySystemComponent() const
 
 UVAbilitySystemComponent* AVCharacter::GetVAbilitySystemComponent() const
 {
-    return VAbilitySystemComponent;
+    return AbilitySystemComponent;
 }
 
 void AVCharacter::BeginPlay()

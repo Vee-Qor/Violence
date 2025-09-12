@@ -30,10 +30,10 @@ protected:
 
 private:
     UPROPERTY(VisibleDefaultsOnly, Category = "AbilitySystem")
-    UVAbilitySystemComponent* VAbilitySystemComponent;
+    UVAbilitySystemComponent* AbilitySystemComponent;
 
     UPROPERTY(VisibleDefaultsOnly, Category = "AbilitySystem")
-    UVAttributeSet* VAttributeSet;
+    UVAttributeSet* AttributeSet;
 
     UPROPERTY(EditDefaultsOnly, Category = "Abilities")
     UVDefaultAbilitySet* DefaultAbilitySet;

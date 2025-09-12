@@ -44,3 +44,13 @@ void UVAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
     bIsJumping = OwnerCharacterMovement->IsFalling() && !OwnerCharacterMovement->IsMovingOnGround();
 }
+
+bool UVAnimInstance::ShouldPlayUpperBody() const
+{
+    if (GetHasAcceleration() || GetIsJumping())
+    {
+        return true;
+    }
+
+    return false;
+}

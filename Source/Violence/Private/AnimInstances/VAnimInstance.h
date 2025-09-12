@@ -42,14 +42,16 @@ public:
     UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     FORCEINLINE float GetAimRotationOffsetYaw() const { return AimRotationOffset.Yaw; }
 
+    UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+    bool ShouldPlayUpperBody() const;
+    
 private:
     UPROPERTY()
     AVCharacter* OwnerVCharacter;
 
     UPROPERTY()
     UCharacterMovementComponent* OwnerCharacterMovement;
-
-
+    
     float WalkingSpeed;
     bool bHasAcceleration;
 
