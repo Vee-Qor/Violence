@@ -3,7 +3,10 @@
 
 #include "AbilitySystem/Abilities/VGA_PrimaryAttack.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "VGameplayTags.h"
 
 UVGA_PrimaryAttack::UVGA_PrimaryAttack()
@@ -31,18 +34,18 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
     if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
     {
-        if (GetWorld() && ResetCurrentAttackCountTimerHandle.IsValid())
+        if (GetWorld() && ComboResetTimerHandle.IsValid())
         {
-            GetWorld()->GetTimerManager().ClearTimer(ResetCurrentAttackCountTimerHandle);
+            GetWorld()->GetTimerManager().ClearTimer(ComboResetTimerHandle);
         }
 
-        if (CurrentAttackCount >= PrimaryAttackMontages.Num())
+        if (CurrentComboIndex >= PrimaryAttackMontages.Num())
         {
-            ResetCurrentAttackCount();
+            ResetCombo();
         }
 
         UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontagesTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
-            PrimaryAttackMontages[CurrentAttackCount]);
+            PrimaryAttackMontages[CurrentComboIndex]);
         if (PlayPrimaryAttackMontagesTask)
         {
             PlayPrimaryAttackMontagesTask->OnCompleted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
@@ -51,7 +54,17 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
             PlayPrimaryAttackMontagesTask->OnInterrupted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
             PlayPrimaryAttackMontagesTask->ReadyForActivation();
 
-            CurrentAttackCount++;
+            CurrentComboIndex++;
+        }
+    }
+
+    if (K2_HasAuthority())
+    {
+        UAbilityTask_WaitGameplayEvent* WaitTraceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_SwordTrace);
+        if (WaitTraceEvent)
+        {
+            WaitTraceEvent->EventReceived.AddDynamic(this, &UVGA_PrimaryAttack::TraceEventReceived);
+            WaitTraceEvent->ReadyForActivation();
         }
     }
 }
@@ -59,16 +72,29 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 void UVGA_PrimaryAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+    OnTraceTakeHitResults.RemoveAll(this);
+
     Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
     if (GetWorld())
     {
-        GetWorld()->GetTimerManager().SetTimer(ResetCurrentAttackCountTimerHandle, this, &UVGA_PrimaryAttack::ResetCurrentAttackCount, ResetAttackCountTimeDuration,
-            0.0f);
+        GetWorld()->GetTimerManager().SetTimer(ComboResetTimerHandle, this, &UVGA_PrimaryAttack::ResetCombo, ComboResetDelay, 0.0f);
     }
 }
 
-void UVGA_PrimaryAttack::ResetCurrentAttackCount()
+void UVGA_PrimaryAttack::ResetCombo()
 {
-    CurrentAttackCount = 0;
+    CurrentComboIndex = 0;
+}
+
+void UVGA_PrimaryAttack::TraceEventReceived(FGameplayEventData EventData)
+{
+    StartTraceTimer(EventData, TraceSphereRadius);
+
+    OnTraceTakeHitResults.AddUObject(this, &UVGA_PrimaryAttack::TraceTakeResults);
+}
+
+void UVGA_PrimaryAttack::TraceTakeResults(const TArray<FHitResult>& HitResults) const
+{
+    ApplyDamageFromHitResults(HitResults, DamageEffect);
 }

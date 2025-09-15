@@ -22,6 +22,7 @@ AVQoP::AVQoP()
 
     GetCapsuleComponent()->SetCapsuleSize(40.0f, 92.0f);
 
+    GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
     GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -92.0f));
     GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 

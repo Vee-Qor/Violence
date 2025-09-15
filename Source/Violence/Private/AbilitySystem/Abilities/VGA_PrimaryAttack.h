@@ -23,11 +23,20 @@ private:
     TArray<UAnimMontage*> PrimaryAttackMontages;
 
     UPROPERTY(EditDefaultsOnly, Category = "Primary Attack")
-    int32 CurrentAttackCount = 0;
+    TSubclassOf<UGameplayEffect> DamageEffect;
 
     UPROPERTY(EditDefaultsOnly, Category = "Primary Attack")
-    float ResetAttackCountTimeDuration = 0.5f;
+    float TraceSphereRadius = 50.0f;
 
-    FTimerHandle ResetCurrentAttackCountTimerHandle;
-    void ResetCurrentAttackCount();
+    UPROPERTY(EditDefaultsOnly, Category = "Primary Attack")
+    float ComboResetDelay = 0.5f;
+
+    int32 CurrentComboIndex = 0;
+    FTimerHandle ComboResetTimerHandle;
+    void ResetCombo();
+
+    UFUNCTION()
+    void TraceEventReceived(FGameplayEventData EventData);
+    
+    void TraceTakeResults(const TArray<FHitResult>& HitResults) const;
 };

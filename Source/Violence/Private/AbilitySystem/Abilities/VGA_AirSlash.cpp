@@ -3,8 +3,11 @@
 
 #include "AbilitySystem/Abilities/VGA_AirSlash.h"
 
-#include "VGameplayTags.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "VGameplayTags.h"
 
 UVGA_AirSlash::UVGA_AirSlash()
 {
@@ -22,7 +25,7 @@ void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
     const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-    
+
     check(AirSlashMontage);
 
     if (!K2_CommitAbility())
@@ -43,4 +46,31 @@ void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
             PlayAirSlashMontageTask->ReadyForActivation();
         }
     }
+
+    if (K2_HasAuthority())
+    {
+        UAbilityTask_WaitGameplayEvent* WaitTraceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_SwordTrace);
+        WaitTraceEvent->EventReceived.AddDynamic(this, &UVGA_AirSlash::TraceEventReceived);
+        WaitTraceEvent->ReadyForActivation();
+    }
+}
+
+void UVGA_AirSlash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+    bool bReplicateEndAbility, bool bWasCancelled)
+{
+    OnTraceTakeHitResults.RemoveAll(this);
+
+    Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UVGA_AirSlash::TraceEventReceived(FGameplayEventData EventData)
+{
+    StartTraceTimer(EventData, TraceSphereRadius);
+
+    OnTraceTakeHitResults.AddUObject(this, &UVGA_AirSlash::TraceTakeResults);
+}
+
+void UVGA_AirSlash::TraceTakeResults(const TArray<FHitResult>& HitResults) const
+{
+    ApplyDamageFromHitResults(HitResults, DamageEffect);
 }

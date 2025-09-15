@@ -24,4 +24,6 @@ UE_DEFINE_GAMEPLAY_TAG(Player_Status_InAir, "Player.Status.InAir")
 UE_DEFINE_GAMEPLAY_TAG(Player_Status_OnGround, "Player.Status.OnGround")
 UE_DEFINE_GAMEPLAY_TAG(Player_Status_Attacking, "Player.Status.Attacking")
 
+UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwordTrace, "Player.Event.SwordTrace")
+
 }
