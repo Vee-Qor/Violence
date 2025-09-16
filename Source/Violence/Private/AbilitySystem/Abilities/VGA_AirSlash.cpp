@@ -18,7 +18,9 @@ UVGA_AirSlash::UVGA_AirSlash()
     ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_Attacking);
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_AirSlash);
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
+    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Travel);
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_InAir);
+    ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
 }
 
 void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -27,6 +29,7 @@ void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
     check(AirSlashMontage);
+    ensureAlwaysMsgf(DamageEffect, TEXT("DamageEffect Empty in %s"), *GetName());
 
     if (!K2_CommitAbility())
     {
@@ -72,5 +75,7 @@ void UVGA_AirSlash::TraceEventReceived(FGameplayEventData EventData)
 
 void UVGA_AirSlash::TraceTakeResults(const TArray<FHitResult>& HitResults) const
 {
+    if (HitResults.IsEmpty()) return;
+    
     ApplyDamageFromHitResults(HitResults, DamageEffect);
 }

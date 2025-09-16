@@ -3,8 +3,12 @@
 
 #include "AnimInstances/VAnimInstance.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Characters/VCharacter.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "VGameplayTags.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UVAnimInstance::NativeInitializeAnimation()
@@ -17,6 +21,12 @@ void UVAnimInstance::NativeInitializeAnimation()
         OwnerCharacterMovement = OwnerVCharacter->GetCharacterMovement();
         LastRotation = OwnerVCharacter->GetActorRotation();
         LastAimRotation = OwnerVCharacter->GetBaseAimRotation();
+
+        UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerVCharacter);
+        if (!ASC) return;
+
+        ASC->RegisterGameplayTagEvent(VGameplayTags::Player_Status_Combat).AddUObject(this, &UVAnimInstance::CombatTagChanged);
+        ASC->RegisterGameplayTagEvent(VGameplayTags::Player_Status_Travel).AddUObject(this, &UVAnimInstance::TravelTagChanged);
     }
 }
 
@@ -53,4 +63,14 @@ bool UVAnimInstance::ShouldPlayUpperBody() const
     }
 
     return false;
+}
+
+void UVAnimInstance::CombatTagChanged(const FGameplayTag Tag, int32 NewCount)
+{
+    bIsInCombat = NewCount != 0;
+}
+
+void UVAnimInstance::TravelTagChanged(const FGameplayTag Tag, int32 NewCount)
+{
+    bIsInTravel = NewCount != 0;
 }

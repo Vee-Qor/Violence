@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "GameplayTagContainer.h"
-#include "ANS_SendLocationToTargetData.generated.h"
+#include "VANS_SendTraceInfoToTargetData.generated.h"
 
 UENUM(BlueprintType)
 enum class EWeaponHand : uint8
@@ -16,7 +16,7 @@ enum class EWeaponHand : uint8
 };
 
 UCLASS()
-class UANS_SendLocationToTargetData : public UAnimNotifyState
+class UVANS_SendTraceInfoToTargetData : public UAnimNotifyState
 {
     GENERATED_BODY()
 

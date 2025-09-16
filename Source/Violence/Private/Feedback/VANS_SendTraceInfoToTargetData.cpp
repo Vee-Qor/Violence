@@ -1,12 +1,12 @@
 // Copyright 2025 Vee.Qor. All Rights Reserved.
 
 
-#include "Feedback/ANS_SendLocationToTargetData.h"
+#include "Feedback/VANS_SendTraceInfoToTargetData.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 
-void UANS_SendLocationToTargetData::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration,
+void UVANS_SendTraceInfoToTargetData::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration,
     const FAnimNotifyEventReference& EventReference)
 {
     Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);

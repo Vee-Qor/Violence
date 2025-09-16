@@ -17,6 +17,8 @@ UVGA_PrimaryAttack::UVGA_PrimaryAttack()
     SetAssetTags(VGameplayTags::Player_Ability_PrimaryAttack.GetTag().GetSingleTagContainer());
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
     ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_Attacking);
+    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Travel);
+    ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
 }
 
 void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -25,6 +27,7 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
     check(PrimaryAttackMontages.Num() > 0);
+    ensureAlwaysMsgf(DamageEffect, TEXT("DamageEffect Empty in %s"), *GetName());
 
     if (!K2_CommitAbility())
     {

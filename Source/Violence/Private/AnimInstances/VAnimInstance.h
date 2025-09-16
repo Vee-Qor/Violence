@@ -8,6 +8,8 @@
 
 class AVCharacter;
 class UCharacterMovementComponent;
+struct FGameplayTag;
+
 
 UCLASS()
 class UVAnimInstance : public UAnimInstance
@@ -45,6 +47,12 @@ public:
     UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     bool ShouldPlayUpperBody() const;
     
+    UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+    bool GetIsInCombat() const { return bIsInCombat; }
+
+    UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+    bool GetIsInTravel() const { return bIsInCombat; }
+
 private:
     UPROPERTY()
     AVCharacter* OwnerVCharacter;
@@ -68,4 +76,9 @@ private:
     FRotator AimRotationOffset;
 
     bool bIsJumping = false;
+    bool bIsInCombat = false;
+    bool bIsInTravel = false;
+
+    void CombatTagChanged(const FGameplayTag Tag, int32 NewCount);
+    void TravelTagChanged(const FGameplayTag Tag, int32 NewCount);
 };
