@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "VResourceBarWidget.generated.h"
+#include "VValueGaugeWidget.generated.h"
 
 class UAbilitySystemComponent;
 class UProgressBar;
@@ -13,7 +13,7 @@ struct FGameplayAttribute;
 struct FOnAttributeChangeData;
 
 UCLASS()
-class UVResourceBarWidget : public UUserWidget
+class UVValueGaugeWidget : public UUserWidget
 {
     GENERATED_BODY()
 

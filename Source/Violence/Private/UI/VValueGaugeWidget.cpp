@@ -1,18 +1,18 @@
 // Copyright 2025 Vee.Qor. All Rights Reserved.
 
 
-#include "UI/VResourceBarWidget.h"
+#include "UI/VValueGaugeWidget.h"
 
 #include "AbilitySystemComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
-void UVResourceBarWidget::NativeConstruct()
+void UVValueGaugeWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 }
 
-void UVResourceBarWidget::InitializeWithAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute,
+void UVValueGaugeWidget::InitializeWithAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute,
     const FGameplayAttribute& MaxAttribute)
 {
     if (!AbilitySystemComponent || !Attribute.IsValid() || !MaxAttribute.IsValid()) return;
@@ -23,23 +23,23 @@ void UVResourceBarWidget::InitializeWithAttribute(UAbilitySystemComponent* Abili
     
     UpdateDisplay();
 
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &UVResourceBarWidget::OnValueChanged);
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MaxAttribute).AddUObject(this, &UVResourceBarWidget::OnMaxValueChanged);
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &UVValueGaugeWidget::OnValueChanged);
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MaxAttribute).AddUObject(this, &UVValueGaugeWidget::OnMaxValueChanged);
 }
 
-void UVResourceBarWidget::OnValueChanged(const FOnAttributeChangeData& ChangeData)
+void UVValueGaugeWidget::OnValueChanged(const FOnAttributeChangeData& ChangeData)
 {
     CachedValue = ChangeData.NewValue;
     UpdateDisplay();
 }
 
-void UVResourceBarWidget::OnMaxValueChanged(const FOnAttributeChangeData& ChangeData)
+void UVValueGaugeWidget::OnMaxValueChanged(const FOnAttributeChangeData& ChangeData)
 {
     CachedMaxValue = ChangeData.NewValue;
     UpdateDisplay();
 }
 
-void UVResourceBarWidget::UpdateDisplay() const
+void UVValueGaugeWidget::UpdateDisplay() const
 {
     if (!ValueDisplayText || !ProgressBar) return;
 

@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/VAttributeSet.h"
-#include "VResourceBarWidget.h"
+#include "VValueGaugeWidget.h"
 
 void UVPlayerHUDWidget::NativeConstruct()
 {
@@ -18,5 +18,6 @@ void UVPlayerHUDWidget::NativeConstruct()
     UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Pawn);
     if (!AbilitySystemComponent) return;
 
-    HealthBarWidget->InitializeWithAttribute(AbilitySystemComponent, UVAttributeSet::GetHealthAttribute(), UVAttributeSet::GetMaxHealthAttribute());
+    HealthGaugeWidget->InitializeWithAttribute(AbilitySystemComponent, UVAttributeSet::GetHealthAttribute(), UVAttributeSet::GetMaxHealthAttribute());
+    ResourceGaugeWidget->InitializeWithAttribute(AbilitySystemComponent, UVAttributeSet::GetResourceAttribute(), UVAttributeSet::GetMaxResourceAttribute());
 }

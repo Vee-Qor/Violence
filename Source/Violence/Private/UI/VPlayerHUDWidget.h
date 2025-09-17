@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "VPlayerHUDWidget.generated.h"
 
-class UVResourceBarWidget;
+class UVValueGaugeWidget;
 
 UCLASS()
 class UVPlayerHUDWidget : public UUserWidget
@@ -18,5 +18,8 @@ public:
 
 private:
     UPROPERTY(meta=(BindWidget))
-    UVResourceBarWidget* HealthBarWidget;
+    UVValueGaugeWidget* HealthGaugeWidget;
+
+    UPROPERTY(meta=(BindWidget))
+    UVValueGaugeWidget* ResourceGaugeWidget;
 };

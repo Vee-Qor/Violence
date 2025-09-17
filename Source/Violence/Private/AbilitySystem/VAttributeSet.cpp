@@ -14,6 +14,11 @@ void UVAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, flo
     {
         NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
     }
+    
+    if (Attribute == GetResourceAttribute())
+    {
+        NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxResource());
+    }
 }
 
 void UVAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -24,6 +29,11 @@ void UVAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCa
     {
         SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
     }
+
+    if (Data.EvaluatedData.Attribute == GetResourceAttribute())
+    {
+        SetResource(FMath::Clamp(GetResource(), 0.0f, GetMaxResource()));
+    }
 }
 
 void UVAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -32,6 +42,8 @@ void UVAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>&
 
     DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, Health, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, Resource, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, MaxResource, COND_None, REPNOTIFY_Always);
 }
 
 void UVAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
@@ -42,4 +54,14 @@ void UVAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 void UVAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UVAttributeSet, Health, OldMaxHealth);
+}
+
+void UVAttributeSet::OnRep_Resource(const FGameplayAttributeData& OldResource) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UVAttributeSet, Resource, OldResource);
+}
+
+void UVAttributeSet::OnRep_MaxResource(const FGameplayAttributeData& OldMaxResource) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UVAttributeSet, MaxResource, OldMaxResource);
 }
