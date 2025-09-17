@@ -13,6 +13,7 @@ UVGA_Jump::UVGA_Jump()
 
     SetAssetTags(VGameplayTags::Player_Ability_Jump.GetTag().GetSingleTagContainer());
     ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_InAir);
+    ActivationBlockedTags.AddTag(VGameplayTags::Player_Ability_Jump);
 }
 
 bool UVGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
@@ -53,4 +54,5 @@ void UVGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 void UVGA_Jump::OnCharacterLanded(const FHitResult& Hit)
 {
     K2_EndAbility();
+    K2_ExecuteGameplayCue(CameraShakeCueTag, MakeEffectContext(CurrentSpecHandle, CurrentActorInfo));
 }

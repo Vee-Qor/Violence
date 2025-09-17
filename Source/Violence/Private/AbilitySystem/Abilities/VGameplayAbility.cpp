@@ -64,11 +64,14 @@ void UVGameplayAbility::ApplyDamageFromHitResults(const TArray<FHitResult>& HitR
     {
         UE_LOG(LogTemp, Warning, TEXT("HitActor: %s"), *HitResult.GetActor()->GetName());
 
-        UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
-        if (TargetASC)
-        {
-            TargetASC->BP_ApplyGameplayEffectToSelf(DamageEffect, 1, TargetASC->MakeEffectContext());
-        }
+        FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
+
+        FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
+        EffectContextHandle.AddHitResult(HitResult);
+        EffectSpecHandle.Data->SetContext(EffectContextHandle);
+
+        ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle,
+            UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
     }
 }
 

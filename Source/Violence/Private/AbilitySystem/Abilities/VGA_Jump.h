@@ -22,4 +22,7 @@ public:
 private:
     UFUNCTION()
     void OnCharacterLanded(const FHitResult& Hit);
+
+    UPROPERTY(EditDefaultsOnly, Category = "GameplayCue")
+    FGameplayTag CameraShakeCueTag;
 };
