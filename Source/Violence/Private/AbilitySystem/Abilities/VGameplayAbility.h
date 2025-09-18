@@ -16,13 +16,20 @@ class UVGameplayAbility : public UGameplayAbility
     GENERATED_BODY()
 
 public:
+    virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
     AVCharacter* GetVCharacterFromActorInfo() const;
     FORCEINLINE bool ShouldDrawDebug() const { return bDrawDebug; }
+    FORCEINLINE float GetCachedAttackSpeed() const { return CachedAttackSpeed; }
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Debug")
     bool bDrawDebug = true;
-    
+
+    UPROPERTY()
+    float CachedAttackSpeed;
+
+    void AttackSpeedChanged(const FOnAttributeChangeData& ChangeData);
+
     /******* Sword Attack *******/
 protected:
     FOnTraceTakeHitResultsSignature OnTraceTakeHitResults;

@@ -19,6 +19,7 @@ UVGA_AirSlash::UVGA_AirSlash()
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_AirSlash);
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
     ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Travel);
+    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_BloodPactActivation);
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_InAir);
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
 }
@@ -39,7 +40,8 @@ void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 
     if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
     {
-        UAbilityTask_PlayMontageAndWait* PlayAirSlashMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, AirSlashMontage);
+        UAbilityTask_PlayMontageAndWait* PlayAirSlashMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, AirSlashMontage,
+            GetCachedAttackSpeed());
         if (PlayAirSlashMontageTask)
         {
             PlayAirSlashMontageTask->OnCompleted.AddDynamic(this, &UVGA_AirSlash::K2_EndAbility);
@@ -76,6 +78,6 @@ void UVGA_AirSlash::TraceEventReceived(FGameplayEventData EventData)
 void UVGA_AirSlash::TraceTakeResults(const TArray<FHitResult>& HitResults) const
 {
     if (HitResults.IsEmpty()) return;
-    
+
     ApplyDamageFromHitResults(HitResults, DamageEffect);
 }

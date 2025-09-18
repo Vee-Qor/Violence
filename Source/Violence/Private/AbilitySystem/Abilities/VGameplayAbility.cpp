@@ -5,8 +5,22 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/VAttributeSet.h"
 #include "Characters/VCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+
+void UVGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+    Super::OnAvatarSet(ActorInfo, Spec);
+
+    UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+    if (ASC)
+    {
+        bool bFound = false;
+        CachedAttackSpeed = ASC->GetGameplayAttributeValue(UVAttributeSet::GetAttackSpeedAttribute(), bFound);
+        ASC->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetAttackSpeedAttribute()).AddUObject(this, &UVGameplayAbility::AttackSpeedChanged);
+    }
+}
 
 AVCharacter* UVGameplayAbility::GetVCharacterFromActorInfo() const
 {
@@ -16,6 +30,11 @@ AVCharacter* UVGameplayAbility::GetVCharacterFromActorInfo() const
     }
 
     return nullptr;
+}
+
+void UVGameplayAbility::AttackSpeedChanged(const FOnAttributeChangeData& ChangeData)
+{
+    CachedAttackSpeed = ChangeData.NewValue;
 }
 
 void UVGameplayAbility::StartTraceTimer(const FGameplayEventData& EventData, const float SphereRadius)

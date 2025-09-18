@@ -25,6 +25,8 @@ public:
     ATTRIBUTE_ACCESSORS(UVAttributeSet, Resource);
     ATTRIBUTE_ACCESSORS(UVAttributeSet, MaxResource);
 
+    ATTRIBUTE_ACCESSORS(UVAttributeSet, AttackSpeed);
+
     virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
     virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
@@ -42,6 +44,9 @@ private:
     UPROPERTY(ReplicatedUsing = OnRep_MaxResource)
     FGameplayAttributeData MaxResource;
 
+    UPROPERTY(ReplicatedUsing = OnRep_AttackSpeed)
+    FGameplayAttributeData AttackSpeed;
+
     UFUNCTION()
     void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
@@ -53,4 +58,7 @@ private:
 
     UFUNCTION()
     void OnRep_MaxResource(const FGameplayAttributeData& OldMaxResource) const;
+
+    UFUNCTION()
+    void OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed) const;
 };

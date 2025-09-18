@@ -18,6 +18,7 @@ UVGA_PrimaryAttack::UVGA_PrimaryAttack()
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
     ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_Attacking);
     ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Travel);
+    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_BloodPactActivation);
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
 }
 
@@ -48,7 +49,7 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
         }
 
         UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontagesTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
-            PrimaryAttackMontages[CurrentComboIndex]);
+            PrimaryAttackMontages[CurrentComboIndex], GetCachedAttackSpeed());
         if (PlayPrimaryAttackMontagesTask)
         {
             PlayPrimaryAttackMontagesTask->OnCompleted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
