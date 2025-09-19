@@ -17,9 +17,9 @@ UVGA_AirSlash::UVGA_AirSlash()
     SetAssetTags(VGameplayTags::Player_Ability_AirSlash.GetTag().GetSingleTagContainer());
     ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_Attacking);
     BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_AirSlash);
-    BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
     ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Travel);
     ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_BloodPactActivation);
+    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Attacking);
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_InAir);
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
 }
@@ -41,7 +41,7 @@ void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
     if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
     {
         UAbilityTask_PlayMontageAndWait* PlayAirSlashMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, AirSlashMontage,
-            GetCachedAttackSpeed());
+            GetCachedAttackSpeed(), NAME_None, false);
         if (PlayAirSlashMontageTask)
         {
             PlayAirSlashMontageTask->OnCompleted.AddDynamic(this, &UVGA_AirSlash::K2_EndAbility);
@@ -49,6 +49,13 @@ void UVGA_AirSlash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
             PlayAirSlashMontageTask->OnBlendOut.AddDynamic(this, &UVGA_AirSlash::K2_EndAbility);
             PlayAirSlashMontageTask->OnInterrupted.AddDynamic(this, &UVGA_AirSlash::K2_EndAbility);
             PlayAirSlashMontageTask->ReadyForActivation();
+        }
+
+        UAbilityTask_WaitGameplayEvent* WaitCanAttackTagEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_CanAttack);
+        if (WaitCanAttackTagEvent)
+        {
+            WaitCanAttackTagEvent->EventReceived.AddDynamic(this, &UVGA_AirSlash::CanAttackTagEventReceived);
+            WaitCanAttackTagEvent->ReadyForActivation();
         }
     }
 

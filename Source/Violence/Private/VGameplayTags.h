@@ -38,6 +38,8 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Status_BloodPactActivation)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwordTrace)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_StanceShift)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_BuffApplied)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_CanAttack)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_ResetAttack)
 
 // GameplayCue Tags //
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_BloodPact_BloodyBlades)

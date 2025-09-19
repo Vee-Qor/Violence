@@ -36,6 +36,9 @@ protected:
     void StartTraceTimer(const FGameplayEventData& EventData, const float SphereRadius);
     void ApplyDamageFromHitResults(const TArray<FHitResult>& HitResults, const TSubclassOf<UGameplayEffect>& DamageEffect) const;
 
+    UFUNCTION()
+    virtual void CanAttackTagEventReceived(FGameplayEventData EventData);
+
 private:
     void PerformTraceStep(const float SphereRadius, const uint8 MaxTraces);
     TArray<FHitResult> DoTraceAndGetUniqueActors(const FVector& TraceStart, const FVector& TraceEnd, const float TraceSphereRadius, TSet<AActor*>& OutHitActors) const;

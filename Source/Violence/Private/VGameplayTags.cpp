@@ -37,6 +37,8 @@ UE_DEFINE_GAMEPLAY_TAG(Player_Status_BloodPactActivation, "Player.Status.BloodPa
 UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwordTrace, "Player.Event.SwordTrace")
 UE_DEFINE_GAMEPLAY_TAG(Player_Event_StanceShift, "Player.Event.StanceShift")
 UE_DEFINE_GAMEPLAY_TAG(Player_Event_BuffApplied, "Player.Event.BuffApplied")
+UE_DEFINE_GAMEPLAY_TAG(Player_Event_CanAttack, "Player.Event.CanAttack")
+UE_DEFINE_GAMEPLAY_TAG(Player_Event_ResetAttack, "Player.Event.ResetAttack")
 
 // GameplayCue Tags //
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_BloodPact_Bloody, "GameplayCue.BloodPact.BloodyBlades")

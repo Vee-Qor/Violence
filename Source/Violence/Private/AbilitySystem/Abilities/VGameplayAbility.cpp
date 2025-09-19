@@ -32,6 +32,11 @@ AVCharacter* UVGameplayAbility::GetVCharacterFromActorInfo() const
     return nullptr;
 }
 
+void UVGameplayAbility::CanAttackTagEventReceived(FGameplayEventData EventData)
+{
+    K2_EndAbility();
+}
+
 void UVGameplayAbility::AttackSpeedChanged(const FOnAttributeChangeData& ChangeData)
 {
     CachedAttackSpeed = ChangeData.NewValue;

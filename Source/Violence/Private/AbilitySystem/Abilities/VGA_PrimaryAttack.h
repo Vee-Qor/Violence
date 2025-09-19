@@ -29,7 +29,7 @@ private:
     float TraceSphereRadius = 50.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "Primary Attack")
-    float ComboResetDelay = 0.5f;
+    float ComboResetDelay = 0.4f;
 
     int32 CurrentComboIndex = 0;
     FTimerHandle ComboResetTimerHandle;
@@ -37,6 +37,6 @@ private:
 
     UFUNCTION()
     void TraceEventReceived(FGameplayEventData EventData);
-    
+
     void TraceTakeResults(const TArray<FHitResult>& HitResults) const;
 };

@@ -6,6 +6,7 @@
 #include "AbilitySystem/VAbilitySystemComponent.h"
 #include "AbilitySystem/VAttributeSet.h"
 #include "DataAssets/VDefaultAbilitySet.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AVCharacter::AVCharacter()
 {
@@ -13,6 +14,9 @@ AVCharacter::AVCharacter()
 
     AbilitySystemComponent = CreateDefaultSubobject<UVAbilitySystemComponent>("VAbility System Component");
     AttributeSet = CreateDefaultSubobject<UVAttributeSet>("VAttribute Set");
+
+    
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetMovementSpeedAttribute()).AddUObject(this, &AVCharacter::MovementSpeedChanged);
 }
 
 void AVCharacter::OnRep_PlayerState()
@@ -49,4 +53,12 @@ UVAbilitySystemComponent* AVCharacter::GetVAbilitySystemComponent() const
 void AVCharacter::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void AVCharacter::MovementSpeedChanged(const FOnAttributeChangeData& ChangeData)
+{
+   if (GetCharacterMovement())
+   {
+       GetCharacterMovement()->MaxWalkSpeed = ChangeData.NewValue;
+   }
 }

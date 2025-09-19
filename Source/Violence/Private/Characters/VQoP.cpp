@@ -25,8 +25,7 @@ AVQoP::AVQoP()
     GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
     GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -92.0f));
     GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-
-    GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+    
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
 

@@ -44,6 +44,7 @@ void UVAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>&
     DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, Resource, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, MaxResource, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, MovementSpeed, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UVAttributeSet, AttackSpeed, COND_None, REPNOTIFY_Always);
 }
 
@@ -65,6 +66,11 @@ void UVAttributeSet::OnRep_Resource(const FGameplayAttributeData& OldResource) c
 void UVAttributeSet::OnRep_MaxResource(const FGameplayAttributeData& OldMaxResource) const
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UVAttributeSet, MaxResource, OldMaxResource);
+}
+
+void UVAttributeSet::OnRep_MovementSpeed(const FGameplayAttributeData& OldMovementSpeed) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UVAttributeSet, MovementSpeed, OldMovementSpeed);
 }
 
 void UVAttributeSet::OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed) const

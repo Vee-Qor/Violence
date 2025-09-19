@@ -10,6 +10,7 @@
 class UVAbilitySystemComponent;
 class UVAttributeSet;
 class UVDefaultAbilitySet;
+struct FOnAttributeChangeData;
 
 UCLASS()
 class AVCharacter : public ACharacter, public IAbilitySystemInterface
@@ -37,4 +38,6 @@ private:
 
     UPROPERTY(EditDefaultsOnly, Category = "Abilities")
     UVDefaultAbilitySet* DefaultAbilitySet;
+
+    void MovementSpeedChanged(const FOnAttributeChangeData& ChangeData);
 };
