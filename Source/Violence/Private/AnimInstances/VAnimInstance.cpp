@@ -9,6 +9,7 @@
 #include "GameplayTagContainer.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "VGameplayTags.h"
+#include "KismetAnimationLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UVAnimInstance::NativeInitializeAnimation()
@@ -37,6 +38,8 @@ void UVAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     if (!OwnerVCharacter || !OwnerCharacterMovement) return;
 
     WalkingSpeed = OwnerVCharacter->GetVelocity().Size2D();
+
+    MovementDirection = UKismetAnimationLibrary::CalculateDirection(OwnerVCharacter->GetVelocity(), OwnerVCharacter->GetActorRotation());
 
     bHasAcceleration = OwnerCharacterMovement->GetCurrentAcceleration().SizeSquared2D() > 0.0f;
 

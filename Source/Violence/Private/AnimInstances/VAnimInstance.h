@@ -46,12 +46,15 @@ public:
 
     UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     bool ShouldPlayUpperBody() const;
-    
+
     UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     bool GetIsInCombat() const { return bIsInCombat; }
 
     UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
     bool GetIsInTravel() const { return bIsInCombat; }
+
+    UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+    float GetMovementDirection() const { return MovementDirection; }
 
 private:
     UPROPERTY()
@@ -59,8 +62,9 @@ private:
 
     UPROPERTY()
     UCharacterMovementComponent* OwnerCharacterMovement;
-    
+
     float WalkingSpeed;
+    float MovementDirection;
     bool bHasAcceleration;
 
     UPROPERTY(EditDefaultsOnly, Category = "View")

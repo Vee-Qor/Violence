@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "BehaviorTree/BehaviorTreeTypes.h"
 #include "VAIController.generated.h"
 
 class UAIPerceptionComponent;
@@ -24,4 +25,10 @@ private:
 
     UPROPERTY(VisibleDefaultsOnly, Category = "Perception")
     UAISenseConfig_Sight* AISightConfig;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AI")
+    UBehaviorTree* BehaviorTree;
+
+    UFUNCTION()
+    void TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 };

@@ -3,6 +3,7 @@
 
 #include "Controllers/VAIController.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Characters/VCharacter.h"
@@ -21,6 +22,7 @@ AVAIController::AVAIController()
     AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("AI Perception Component");
     AIPerceptionComponent->ConfigureSense(*AISightConfig);
     AIPerceptionComponent->SetDominantSense(UAISense_Sight::StaticClass());
+    AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AVAIController::TargetPerceptionUpdated);
 }
 
 void AVAIController::OnPossess(APawn* InPawn)
@@ -33,4 +35,14 @@ void AVAIController::OnPossess(APawn* InPawn)
     }
 
     SetGenericTeamId(FGenericTeamId(3));
+
+    check(BehaviorTree);
+    RunBehaviorTree(BehaviorTree);
+}
+
+void AVAIController::TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+    UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+    if (!BlackboardComponent) return;
+    BlackboardComponent->SetValueAsObject(FName("Target"), Actor);
 }
