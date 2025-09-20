@@ -15,7 +15,6 @@ AVCharacter::AVCharacter()
     AbilitySystemComponent = CreateDefaultSubobject<UVAbilitySystemComponent>("VAbility System Component");
     AttributeSet = CreateDefaultSubobject<UVAttributeSet>("VAttribute Set");
 
-    
     AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetMovementSpeedAttribute()).AddUObject(this, &AVCharacter::MovementSpeedChanged);
 }
 
@@ -50,6 +49,19 @@ UVAbilitySystemComponent* AVCharacter::GetVAbilitySystemComponent() const
     return AbilitySystemComponent;
 }
 
+FGenericTeamId AVCharacter::GetGenericTeamId() const
+{
+    if (const AController* CharacterController = GetController())
+    {
+        if (const IGenericTeamAgentInterface* ControllerTeamInterface = Cast<IGenericTeamAgentInterface>(CharacterController))
+        {
+            return ControllerTeamInterface->GetGenericTeamId();
+        }
+    }
+
+    return FGenericTeamId::NoTeam;
+}
+
 void AVCharacter::BeginPlay()
 {
     Super::BeginPlay();
@@ -57,8 +69,8 @@ void AVCharacter::BeginPlay()
 
 void AVCharacter::MovementSpeedChanged(const FOnAttributeChangeData& ChangeData)
 {
-   if (GetCharacterMovement())
-   {
-       GetCharacterMovement()->MaxWalkSpeed = ChangeData.NewValue;
-   }
+    if (GetCharacterMovement())
+    {
+        GetCharacterMovement()->MaxWalkSpeed = ChangeData.NewValue;
+    }
 }

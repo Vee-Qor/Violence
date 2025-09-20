@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+#include "GenericTeamAgentInterface.h"
 #include "VCharacter.generated.h"
 
 class UVAbilitySystemComponent;
@@ -13,7 +14,7 @@ class UVDefaultAbilitySet;
 struct FOnAttributeChangeData;
 
 UCLASS()
-class AVCharacter : public ACharacter, public IAbilitySystemInterface
+class AVCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
     GENERATED_BODY()
 
@@ -25,6 +26,7 @@ public:
 
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
     virtual UVAbilitySystemComponent* GetVAbilitySystemComponent() const;
+    virtual FGenericTeamId GetGenericTeamId() const override;
 
 protected:
     virtual void BeginPlay() override;

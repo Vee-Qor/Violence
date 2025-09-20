@@ -13,6 +13,8 @@ void AVPlayerController::OnPossess(APawn* InPawn)
     {
         VCharacter->ServerInitial();
     }
+
+    SetGenericTeamId(FGenericTeamId(2));
 }
 
 void AVPlayerController::AcknowledgePossession(class APawn* InPawn)
