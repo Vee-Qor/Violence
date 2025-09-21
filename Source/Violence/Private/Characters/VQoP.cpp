@@ -25,7 +25,7 @@ AVQoP::AVQoP()
     GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
     GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -92.0f));
     GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-    
+
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 360.0f, 0.0f);
 
@@ -64,10 +64,10 @@ void AVQoP::PawnClientRestart()
     checkf(InputConfig, TEXT("Forgot to assign InputConfig in %s"), *GetName())
     ensureAlwaysMsgf(InputConfig->GetDefaultInputMappingContext(), TEXT("Input Mapping Context is empty in %s"), *InputConfig->GetName());
 
-    APlayerController* PlayerController = GetController<APlayerController>();
+    const APlayerController* PlayerController = GetController<APlayerController>();
     if (!PlayerController) return;
 
-    ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+    const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
     if (!LocalPlayer) return;
 
     UEnhancedInputLocalPlayerSubsystem* InputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();

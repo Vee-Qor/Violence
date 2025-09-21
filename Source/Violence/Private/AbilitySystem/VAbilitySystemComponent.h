@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "VAbilitySystemComponent.generated.h"
 
+class UVGameplayAbility;
 struct FVAbilitySet;
 
 UCLASS()
@@ -15,6 +16,7 @@ class UVAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
     void GiveInitialAbilities(const TArray<FVAbilitySet>& Abilities);
+    void GiveInitialAbilities(const TArray<TSubclassOf<UVGameplayAbility>>& Abilities);
     void ApplyInitialEffects(const TArray<TSubclassOf<UGameplayEffect>>& GameplayEffects);
 
     void HandleAbilityInputPressed(const FGameplayTag& InputTag);

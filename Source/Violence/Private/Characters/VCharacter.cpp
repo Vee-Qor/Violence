@@ -5,7 +5,7 @@
 
 #include "AbilitySystem/VAbilitySystemComponent.h"
 #include "AbilitySystem/VAttributeSet.h"
-#include "DataAssets/VDefaultAbilitySet.h"
+#include "DataAssets/AbilitySets/VDefaultAbilitySet.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AVCharacter::AVCharacter()
@@ -15,7 +15,8 @@ AVCharacter::AVCharacter()
     AbilitySystemComponent = CreateDefaultSubobject<UVAbilitySystemComponent>("VAbility System Component");
     AttributeSet = CreateDefaultSubobject<UVAttributeSet>("VAttribute Set");
 
-    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetMovementSpeedAttribute()).AddUObject(this, &AVCharacter::MovementSpeedChanged);
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetMovementSpeedAttribute()).AddUObject(this,
+        &AVCharacter::MovementSpeedChanged);
 }
 
 void AVCharacter::OnRep_PlayerState()
@@ -27,11 +28,10 @@ void AVCharacter::OnRep_PlayerState()
 
 void AVCharacter::ServerInitial()
 {
-    check(DefaultAbilitySet);
+    check(CharacterAbilitySet);
 
     AbilitySystemComponent->InitAbilityActorInfo(this, this);
-    AbilitySystemComponent->ApplyInitialEffects(DefaultAbilitySet->GetInitialEffects());
-    AbilitySystemComponent->GiveInitialAbilities(DefaultAbilitySet->GetInitialAbilities());
+    CharacterAbilitySet->ApplyToASC(AbilitySystemComponent);
 }
 
 void AVCharacter::ClientInitial()

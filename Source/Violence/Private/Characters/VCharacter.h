@@ -39,7 +39,7 @@ private:
     UVAttributeSet* AttributeSet;
 
     UPROPERTY(EditDefaultsOnly, Category = "Abilities")
-    UVDefaultAbilitySet* DefaultAbilitySet;
+    UVDefaultAbilitySet* CharacterAbilitySet;
 
     void MovementSpeedChanged(const FOnAttributeChangeData& ChangeData);
 };

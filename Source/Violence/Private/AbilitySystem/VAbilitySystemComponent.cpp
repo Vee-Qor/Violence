@@ -24,6 +24,23 @@ void UVAbilitySystemComponent::GiveInitialAbilities(const TArray<FVAbilitySet>& 
     }
 }
 
+void UVAbilitySystemComponent::GiveInitialAbilities(const TArray<TSubclassOf<UVGameplayAbility>>& Abilities)
+{
+    if (!GetOwner() || !GetOwner()->HasAuthority()) return;
+
+    if (Abilities.IsEmpty()) return;
+
+    for (const TSubclassOf<UVGameplayAbility>& Ability : Abilities)
+    {
+        if (!IsValid(Ability)) continue;
+
+        FGameplayAbilitySpec AbilitySpec(Ability);
+        AbilitySpec.SourceObject = GetAvatarActor();
+
+        GiveAbility(AbilitySpec);
+    }
+}
+
 void UVAbilitySystemComponent::ApplyInitialEffects(const TArray<TSubclassOf<UGameplayEffect>>& GameplayEffects)
 {
     if (!GetOwner() || !GetOwner()->HasAuthority()) return;
