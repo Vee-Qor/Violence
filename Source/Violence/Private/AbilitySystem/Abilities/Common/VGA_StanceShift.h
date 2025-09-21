@@ -23,16 +23,14 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "StanceShift|Animation")
     UAnimMontage* TravelStanceMontage;
 
-    UPROPERTY()
-    UAnimMontage* CurrentStanceMontage;
-
     UPROPERTY(EditDefaultsOnly, Category = "StanceShift|Effects")
     TSubclassOf<UGameplayEffect> CombatTagEffect;
 
     UPROPERTY(EditDefaultsOnly, Category = "StanceShift|Effects")
     TSubclassOf<UGameplayEffect> TravelTagEffect;
 
-    void ChooseStanceMontage();
+    UPROPERTY()
+    UAnimMontage* CurrentStanceMontage;
 
     UFUNCTION()
     void ChangeStanceEventReceived(FGameplayEventData EventData);

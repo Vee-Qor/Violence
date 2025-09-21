@@ -11,9 +11,8 @@ UVGA_Jump::UVGA_Jump()
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-    SetAssetTags(VGameplayTags::Player_Ability_Jump.GetTag().GetSingleTagContainer());
-    ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_InAir);
-    ActivationBlockedTags.AddTag(VGameplayTags::Player_Ability_Jump);
+    SetAssetTags(VGameplayTags::Common_Ability_Jump.GetTag().GetSingleTagContainer());
+    ActivationOwnedTags.AddTag(VGameplayTags::Common_Status_InAir);
 }
 
 bool UVGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,

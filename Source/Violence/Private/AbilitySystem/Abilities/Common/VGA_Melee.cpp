@@ -14,13 +14,13 @@ UVGA_Melee::UVGA_Melee()
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-    SetAssetTags(VGameplayTags::Player_Ability_PrimaryAttack.GetTag().GetSingleTagContainer());
-    BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_PrimaryAttack);
-    ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_Attacking);
-    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Travel);
-    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_BloodPactActivation);
-    ActivationBlockedTags.AddTag(VGameplayTags::Player_Status_Attacking);
-    ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
+    ActivationOwnedTags.AddTag(VGameplayTags::Common_Status_Attacking);
+
+    ActivationRequiredTags.AddTag(VGameplayTags::Common_Status_Combat);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Travel);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Casting);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Attacking);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_StanceShifting);
 }
 
 void UVGA_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -28,7 +28,7 @@ void UVGA_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-    check(PrimaryAttackMontages.Num() > 0);
+    check(MeleeAttackMontages.Num() > 0);
     ensureAlwaysMsgf(DamageEffect, TEXT("DamageEffect Empty in %s"), *GetName());
 
     if (!K2_CommitAbility())
@@ -44,22 +44,22 @@ void UVGA_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
             GetWorld()->GetTimerManager().ClearTimer(ComboResetTimerHandle);
         }
 
-        if (CurrentComboIndex >= PrimaryAttackMontages.Num())
+        if (ComboIndex >= MeleeAttackMontages.Num())
         {
             ResetCombo();
         }
 
-        UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontagesTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
-            PrimaryAttackMontages[CurrentComboIndex], GetCachedAttackSpeed(), NAME_None, false);
-        if (PlayPrimaryAttackMontagesTask)
+        UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontages = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
+            MeleeAttackMontages[ComboIndex], GetCachedAttackSpeed(), NAME_None, false);
+        if (PlayPrimaryAttackMontages)
         {
-            PlayPrimaryAttackMontagesTask->OnCompleted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-            PlayPrimaryAttackMontagesTask->OnCancelled.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-            PlayPrimaryAttackMontagesTask->OnBlendOut.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-            PlayPrimaryAttackMontagesTask->OnInterrupted.AddDynamic(this, &UVGA_PrimaryAttack::K2_EndAbility);
-            PlayPrimaryAttackMontagesTask->ReadyForActivation();
+            PlayPrimaryAttackMontages->OnCompleted.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+            PlayPrimaryAttackMontages->OnCancelled.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+            PlayPrimaryAttackMontages->OnBlendOut.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+            PlayPrimaryAttackMontages->OnInterrupted.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+            PlayPrimaryAttackMontages->ReadyForActivation();
 
-            CurrentComboIndex++;
+            ComboIndex++;
         }
 
         UAbilityTask_WaitGameplayEvent* WaitCanAttackEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_CanAttack);
@@ -96,7 +96,7 @@ void UVGA_Melee::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 
 void UVGA_Melee::ResetCombo()
 {
-    CurrentComboIndex = 0;
+    ComboIndex = 0;
 }
 
 void UVGA_Melee::AttackTraceEventReceived(FGameplayEventData EventData)

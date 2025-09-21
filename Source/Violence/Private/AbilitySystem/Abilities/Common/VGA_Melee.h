@@ -19,8 +19,8 @@ public:
         const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 private:
-    TArray<UAnimMontage*> PrimaryAttackMontages;
     UPROPERTY(EditDefaultsOnly, Category = "Melee|Animation")
+    TArray<UAnimMontage*> MeleeAttackMontages;
 
     UPROPERTY(EditDefaultsOnly, Category = "Melee|Damage")
     TSubclassOf<UGameplayEffect> DamageEffect;
@@ -31,7 +31,7 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Melee|Combo")
     float ComboResetDelay = 0.4f;
 
-    int32 CurrentComboIndex = 0;
+    int32 ComboIndex = 0;
     FTimerHandle ComboResetTimerHandle;
     void ResetCombo();
 

@@ -13,9 +13,12 @@ UVGA_StanceShift::UVGA_StanceShift()
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-    SetAssetTags(VGameplayTags::Player_Ability_StanceShift.GetTag().GetSingleTagContainer());
-    BlockAbilitiesWithTag.AddTag(VGameplayTags::Player_Ability_StanceShift);
-    ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_StanceShifting);
+    SetAssetTags(VGameplayTags::Common_Ability_StanceShift.GetTag().GetSingleTagContainer());
+    ActivationOwnedTags.AddTag(VGameplayTags::Common_Status_StanceShifting);
+
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Casting);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Attacking);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_StanceShifting);
 }
 
 void UVGA_StanceShift::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -38,7 +41,8 @@ void UVGA_StanceShift::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 
     ChooseStanceMontage();
 
-    UAbilityTask_PlayMontageAndWait* PlayEquipMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, CurrentStanceMontage);
+    UAbilityTask_PlayMontageAndWait* PlayEquipMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
+        CurrentStanceMontage, GetCachedAttackSpeed());
     if (PlayEquipMontageTask)
     {
         PlayEquipMontageTask->OnCompleted.AddDynamic(this, &UVGA_StanceShift::K2_EndAbility);

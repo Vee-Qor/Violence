@@ -13,17 +13,20 @@ UVGA_Buff::UVGA_Buff()
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-    SetAssetTags(VGameplayTags::Player_Ability_BloodPact.GetTag().GetSingleTagContainer());
-    ActivationBlockedTags.AddTag(VGameplayTags::Player_Ability_BloodPact);
-    ActivationOwnedTags.AddTag(VGameplayTags::Player_Status_BloodPactActivation);
-    ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
+    ActivationOwnedTags.AddTag(VGameplayTags::Common_Status_Casting);
+
+    ActivationRequiredTags.AddTag(VGameplayTags::Common_Status_Combat);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Travel);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Casting);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Attacking);
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_StanceShifting);
 }
 
 void UVGA_Buff::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-    ensureAlwaysMsgf(ApplyEffects.Num() > 0, TEXT("BloodPactEffects is empty in %s"), *GetName());
+    check(BuffMontage);
     ensureAlwaysMsgf(ApplyEffects.Num() > 0, TEXT("ApplyEffects is empty in %s"), *GetName());
 
     if (!K2_CommitAbility())
@@ -34,22 +37,20 @@ void UVGA_Buff::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
     if (HasAuthorityOrPredictionKey(CurrentActorInfo, &CurrentActivationInfo))
     {
-        UAbilityTask_PlayMontageAndWait* PlayBloodPactMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, BloodPactMontage);
-        if (PlayBloodPactMontageTask)
+        UAbilityTask_PlayMontageAndWait* PlayBuffMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None, BuffMontage);
         if (PlayBuffMontageTask)
         {
-            PlayBloodPactMontageTask->OnCompleted.AddDynamic(this, &UVGA_BloodPact::K2_EndAbility);
-            PlayBloodPactMontageTask->OnCancelled.AddDynamic(this, &UVGA_BloodPact::K2_EndAbility);
-            PlayBloodPactMontageTask->OnBlendOut.AddDynamic(this, &UVGA_BloodPact::K2_EndAbility);
-            PlayBloodPactMontageTask->OnInterrupted.AddDynamic(this, &UVGA_BloodPact::K2_EndAbility);
-            PlayBloodPactMontageTask->ReadyForActivation();
+            PlayBuffMontageTask->OnCompleted.AddDynamic(this, &UVGA_Buff::K2_EndAbility);
+            PlayBuffMontageTask->OnCancelled.AddDynamic(this, &UVGA_Buff::K2_EndAbility);
+            PlayBuffMontageTask->OnBlendOut.AddDynamic(this, &UVGA_Buff::K2_EndAbility);
+            PlayBuffMontageTask->OnInterrupted.AddDynamic(this, &UVGA_Buff::K2_EndAbility);
             PlayBuffMontageTask->ReadyForActivation();
         }
     }
 
     if (K2_HasAuthority())
     {
-        UAbilityTask_WaitGameplayEvent* WaitBuffAppliedTagEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_BuffApplied);
+        UAbilityTask_WaitGameplayEvent* WaitBuffAppliedTagEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this,
             VGameplayTags::Common_Event_BuffApplied);
         if (WaitBuffAppliedTagEvent)
         {
