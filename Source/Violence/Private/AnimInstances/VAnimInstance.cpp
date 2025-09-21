@@ -26,8 +26,8 @@ void UVAnimInstance::NativeInitializeAnimation()
         UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OwnerVCharacter);
         if (!ASC) return;
 
-        ASC->RegisterGameplayTagEvent(VGameplayTags::Player_Status_Combat).AddUObject(this, &UVAnimInstance::CombatTagChanged);
-        ASC->RegisterGameplayTagEvent(VGameplayTags::Player_Status_Travel).AddUObject(this, &UVAnimInstance::TravelTagChanged);
+        ASC->RegisterGameplayTagEvent(VGameplayTags::Common_Status_Combat).AddUObject(this, &UVAnimInstance::CombatTagChanged);
+        ASC->RegisterGameplayTagEvent(VGameplayTags::Common_Status_Travel).AddUObject(this, &UVAnimInstance::TravelTagChanged);
     }
 }
 

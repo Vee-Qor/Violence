@@ -1,7 +1,7 @@
 // Copyright 2025 Vee.Qor. All Rights Reserved.
 
 
-#include "AbilitySystem/Abilities/VGA_PrimaryAttack.h"
+#include "AbilitySystem/Abilities/Common//VGA_Melee.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
@@ -9,7 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "VGameplayTags.h"
 
-UVGA_PrimaryAttack::UVGA_PrimaryAttack()
+UVGA_Melee::UVGA_Melee()
 {
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
@@ -23,7 +23,7 @@ UVGA_PrimaryAttack::UVGA_PrimaryAttack()
     ActivationRequiredTags.AddTag(VGameplayTags::Player_Status_Combat);
 }
 
-void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+void UVGA_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -62,26 +62,26 @@ void UVGA_PrimaryAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle
             CurrentComboIndex++;
         }
 
-        UAbilityTask_WaitGameplayEvent* WaitCanAttackTagEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_CanAttack);
-        if (WaitCanAttackTagEvent)
+        UAbilityTask_WaitGameplayEvent* WaitCanAttackEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_CanAttack);
+        if (WaitCanAttackEvent)
         {
-            WaitCanAttackTagEvent->EventReceived.AddDynamic(this, &UVGA_PrimaryAttack::CanAttackTagEventReceived);
-            WaitCanAttackTagEvent->ReadyForActivation();
+            WaitCanAttackEvent->EventReceived.AddDynamic(this, &UVGA_Melee::CanAttackTagEventReceived);
+            WaitCanAttackEvent->ReadyForActivation();
         }
     }
 
     if (K2_HasAuthority())
     {
-        UAbilityTask_WaitGameplayEvent* WaitTraceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_SwordTrace);
-        if (WaitTraceEvent)
+        UAbilityTask_WaitGameplayEvent* WaitAttackTraceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_AttackTrace);
+        if (WaitAttackTraceEvent)
         {
-            WaitTraceEvent->EventReceived.AddDynamic(this, &UVGA_PrimaryAttack::TraceEventReceived);
-            WaitTraceEvent->ReadyForActivation();
+            WaitAttackTraceEvent->EventReceived.AddDynamic(this, &UVGA_Melee::AttackTraceEventReceived);
+            WaitAttackTraceEvent->ReadyForActivation();
         }
     }
 }
 
-void UVGA_PrimaryAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+void UVGA_Melee::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
     OnTraceTakeHitResults.RemoveAll(this);
@@ -90,23 +90,23 @@ void UVGA_PrimaryAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 
     if (GetWorld())
     {
-        GetWorld()->GetTimerManager().SetTimer(ComboResetTimerHandle, this, &UVGA_PrimaryAttack::ResetCombo, ComboResetDelay, 0.0f);
+        GetWorld()->GetTimerManager().SetTimer(ComboResetTimerHandle, this, &UVGA_Melee::ResetCombo, ComboResetDelay, 0.0f);
     }
 }
 
-void UVGA_PrimaryAttack::ResetCombo()
+void UVGA_Melee::ResetCombo()
 {
     CurrentComboIndex = 0;
 }
 
-void UVGA_PrimaryAttack::TraceEventReceived(FGameplayEventData EventData)
+void UVGA_Melee::AttackTraceEventReceived(FGameplayEventData EventData)
 {
     StartTraceTimer(EventData, TraceSphereRadius);
 
-    OnTraceTakeHitResults.AddUObject(this, &UVGA_PrimaryAttack::TraceTakeResults);
+    OnTraceTakeHitResults.AddUObject(this, &UVGA_Melee::TraceTakeResults);
 }
 
-void UVGA_PrimaryAttack::TraceTakeResults(const TArray<FHitResult>& HitResults) const
+void UVGA_Melee::TraceTakeResults(const TArray<FHitResult>& HitResults) const
 {
     ApplyDamageFromHitResults(HitResults, DamageEffect);
 }

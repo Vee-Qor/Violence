@@ -1,7 +1,7 @@
 // Copyright 2025 Vee.Qor. All Rights Reserved.
 
 
-#include "AbilitySystem/Abilities/VGA_StanceShift.h"
+#include "AbilitySystem/Abilities/Common/VGA_StanceShift.h"
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -48,7 +48,7 @@ void UVGA_StanceShift::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
         PlayEquipMontageTask->ReadyForActivation();
     }
 
-    UAbilityTask_WaitGameplayEvent* WaitChangeStanceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Player_Event_StanceShift);
+    UAbilityTask_WaitGameplayEvent* WaitChangeStanceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_StanceShift);
     if (WaitChangeStanceEvent)
     {
         WaitChangeStanceEvent->EventReceived.AddDynamic(this, &UVGA_StanceShift::ChangeStanceEventReceived);
@@ -61,11 +61,11 @@ void UVGA_StanceShift::ChooseStanceMontage()
     const UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
     if (!ASC) return;
 
-    if (ASC->HasMatchingGameplayTag(VGameplayTags::Player_Status_Combat))
+    if (ASC->HasMatchingGameplayTag(VGameplayTags::Common_Status_Combat))
     {
         CurrentStanceMontage = TravelStanceMontage;
     }
-    else if (ASC->HasMatchingGameplayTag(VGameplayTags::Player_Status_Travel))
+    else if (ASC->HasMatchingGameplayTag(VGameplayTags::Common_Status_Travel))
     {
         CurrentStanceMontage = CombatStanceMontage;
     }
@@ -76,11 +76,11 @@ void UVGA_StanceShift::ChangeStanceEventReceived(FGameplayEventData EventData)
     UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
     if (!ASC) return;
 
-    if (ASC->HasMatchingGameplayTag(VGameplayTags::Player_Status_Combat))
+    if (ASC->HasMatchingGameplayTag(VGameplayTags::Common_Status_Combat))
     {
         ApplyEffect(ASC, TravelTagEffect, CombatTagEffect);
     }
-    else if (ASC->HasMatchingGameplayTag(VGameplayTags::Player_Status_Travel))
+    else if (ASC->HasMatchingGameplayTag(VGameplayTags::Common_Status_Travel))
     {
         ApplyEffect(ASC, CombatTagEffect, TravelTagEffect);
     }

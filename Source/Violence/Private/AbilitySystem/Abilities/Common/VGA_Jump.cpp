@@ -1,7 +1,7 @@
 // Copyright 2025 Vee.Qor. All Rights Reserved.
 
 
-#include "AbilitySystem/Abilities/VGA_Jump.h"
+#include "AbilitySystem/Abilities/Common/VGA_Jump.h"
 
 #include "Characters/VCharacter.h"
 #include "VGameplayTags.h"
@@ -28,7 +28,8 @@ bool UVGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
     return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
-void UVGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+void UVGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+    const FGameplayAbilityActivationInfo ActivationInfo,
     const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

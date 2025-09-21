@@ -16,29 +16,29 @@ UE_DEFINE_GAMEPLAY_TAG(InputTag_StanceShift, "InputTag.StanceShift")
 UE_DEFINE_GAMEPLAY_TAG(InputTag_AbilityOne, "InputTag.AbilityOne")
 
 // Player Tags //
-UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Jump, "Player.Ability.Jump")
-UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Jump_Cooldown, "Player.Ability.Jump.Cooldown")
-
-UE_DEFINE_GAMEPLAY_TAG(Player_Ability_PrimaryAttack, "Player.Ability.PrimaryAttack")
 UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AirSlash, "Player.Ability.AirSlash")
-UE_DEFINE_GAMEPLAY_TAG(Player_Ability_StanceShift, "Player.Ability.StanceShift")
-
 UE_DEFINE_GAMEPLAY_TAG(Player_Ability_BloodPact, "Player.Ability.BloodPact")
 UE_DEFINE_GAMEPLAY_TAG(Player_Ability_BloodPact_Cooldown, "Player.Ability.BloodPact.Cooldown")
 
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_Combat, "Player.Status.Combat")
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_Travel, "Player.Status.Travel")
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_InAir, "Player.Status.InAir")
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_OnGround, "Player.Status.OnGround")
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_Attacking, "Player.Status.Attacking")
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_StanceShifting, "Player.Status.StanceShifting")
-UE_DEFINE_GAMEPLAY_TAG(Player_Status_BloodPactActivation, "Player.Status.BloodPactActivation")
+// Common Tags //
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_PrimaryAttack, "Common.Ability.PrimaryAttack")
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_StanceShift, "Common.Ability.StanceShift")
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Jump, "Common.Ability.Jump")
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Jump_Cooldown, "Common.Ability.Jump.Cooldown")
 
-UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwordTrace, "Player.Event.SwordTrace")
-UE_DEFINE_GAMEPLAY_TAG(Player_Event_StanceShift, "Player.Event.StanceShift")
-UE_DEFINE_GAMEPLAY_TAG(Player_Event_BuffApplied, "Player.Event.BuffApplied")
-UE_DEFINE_GAMEPLAY_TAG(Player_Event_CanAttack, "Player.Event.CanAttack")
-UE_DEFINE_GAMEPLAY_TAG(Player_Event_ResetAttack, "Player.Event.ResetAttack")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_Combat, "Common.Status.Combat")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_Travel, "Common.Status.Travel")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_OnGround, "Common.Status.OnGround")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_InAir, "Common.Status.InAir")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_Attacking, "Common.Status.Attacking")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_StanceShifting, "Common.Status.StanceShifting")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_Casting, "Common.Status.Casting")
+
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_AttackTrace, "Common.Event.AttackTrace")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_CanAttack, "Common.Event.CanAttack")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_ResetAttack, "Common.Event.ResetAttack")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_StanceShift, "Common.Event.StanceShift")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_BuffApplied, "Common.Event.BuffApplied")
 
 // GameplayCue Tags //
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_BloodPact_Bloody, "GameplayCue.BloodPact.BloodyBlades")
