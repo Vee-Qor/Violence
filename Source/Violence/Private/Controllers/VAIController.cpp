@@ -16,8 +16,8 @@ AVAIController::AVAIController(const FObjectInitializer& ObjectInitializer) : Su
     AISightConfig->DetectionByAffiliation.bDetectEnemies = true;
     AISightConfig->DetectionByAffiliation.bDetectFriendlies = false;
     AISightConfig->DetectionByAffiliation.bDetectNeutrals = false;
-    AISightConfig->SightRadius = 1500.0f;
-    AISightConfig->LoseSightRadius = 2000.0f;
+    AISightConfig->SightRadius = 1000.0f;
+    AISightConfig->LoseSightRadius = 1200.0f;
     AISightConfig->SetMaxAge(5.0f);
     AISightConfig->PeripheralVisionAngleDegrees = 90.0f;
 

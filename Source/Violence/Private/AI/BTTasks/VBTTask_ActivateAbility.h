@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_ActivateAbility.generated.h"
+#include "VBTTask_ActivateAbility.generated.h"
 
 class UGameplayAbility;
 
 UCLASS()
-class UBTTask_ActivateAbility : public UBTTaskNode
+class UVBTTask_ActivateAbility : public UBTTaskNode
 {
     GENERATED_BODY()
 
