@@ -39,11 +39,13 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_CanAttack)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_ResetAttack)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_StanceShift)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_BuffApplied)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Hit_React)
 
 // GameplayCue Tags //
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_BloodPact_BloodyBlades)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Hit_CameraShake)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Hit_Impact)
-UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Hit_React)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Hit_Impact_QoP)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Hit_Impact_BuffBlack)
 
 }

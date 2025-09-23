@@ -41,7 +41,8 @@ protected:
 
 private:
     void PerformTraceStep(const float SphereRadius, const uint8 MaxTraces);
-    TArray<FHitResult> DoTraceAndGetUniqueActors(const FVector& TraceStart, const FVector& TraceEnd, const float TraceSphereRadius, TSet<AActor*>& OutHitActors) const;
+    TArray<FHitResult> DoTraceAndGetUniqueActors(const FVector& TraceStart, const FVector& TraceEnd, const float TraceSphereRadius,
+        TSet<AActor*>& OutHitActors) const;
 
     UPROPERTY()
     TMap<FName, FVector> PrevSocketLocations;

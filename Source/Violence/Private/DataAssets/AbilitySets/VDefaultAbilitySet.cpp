@@ -10,5 +10,6 @@ void UVDefaultAbilitySet::ApplyToASC(UVAbilitySystemComponent* ASC) const
     if (ASC)
     {
         ASC->ApplyInitialEffects(GetInitialEffects());
+        ASC->GiveInitialAbilities(GetPassiveReactionAbilities());
     }
 }

@@ -39,11 +39,13 @@ UE_DEFINE_GAMEPLAY_TAG(Common_Event_CanAttack, "Common.Event.CanAttack")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_ResetAttack, "Common.Event.ResetAttack")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_StanceShift, "Common.Event.StanceShift")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_BuffApplied, "Common.Event.BuffApplied")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_Hit_React, "Common.Event.Hit.React")
 
 // GameplayCue Tags //
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_BloodPact_Bloody, "GameplayCue.BloodPact.BloodyBlades")
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_CameraShake, "GameplayCue.Hit.CameraShake")
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact, "GameplayCue.Hit.Impact")
-UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_React, "GameplayCue.Hit.React")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact_QoP, "GameplayCue.Hit.Impact.QoP")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact_BuffBlack, "GameplayCue.Hit.Impact.BuffBlack")
 
 }

@@ -7,11 +7,14 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/VAttributeSet.h"
 #include "Characters/VCharacter.h"
+#include "VGameplayTags.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UVGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
     Super::OnAvatarSet(ActorInfo, Spec);
+
+    if (!IsInstantiated()) return;
 
     UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
     if (ASC)
@@ -96,6 +99,11 @@ void UVGameplayAbility::ApplyDamageFromHitResults(const TArray<FHitResult>& HitR
 
         ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle,
             UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
+
+        FGameplayEventData EventData;
+        EventData.ContextHandle = EffectContextHandle;
+
+        UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitResult.GetActor(), VGameplayTags::Common_Event_Hit_React, EventData);
     }
 }
 
@@ -144,7 +152,8 @@ TArray<FHitResult> UVGameplayAbility::DoTraceAndGetUniqueActors(const FVector& T
 
     TArray<FHitResult> HitResults;
 
-    UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceStart, TraceEnd, TraceSphereRadius, ObjectTypes, false, IgnoredActors, DrawDebug, HitResults, false);
+    UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceStart, TraceEnd, TraceSphereRadius, ObjectTypes, false, IgnoredActors, DrawDebug, HitResults,
+        false);
     for (const FHitResult& HitResult : HitResults)
     {
         if (!HitResult.GetActor() || OutHitActors.Contains(HitResult.GetActor())) continue;
