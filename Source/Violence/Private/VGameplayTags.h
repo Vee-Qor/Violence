@@ -21,10 +21,13 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_AirSlash)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_BloodPact)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_BloodPact_Cooldown)
 
+// Common Tags //
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_PrimaryAttack)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_StanceShift)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Jump)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Jump_Cooldown)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Hit_React)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Death)
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Combat)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Travel)
@@ -33,6 +36,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_InAir)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Attacking)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_StanceShifting)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Casting)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Dead)
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_AttackTrace)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_CanAttack)
@@ -40,6 +44,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_ResetAttack)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_StanceShift)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_BuffApplied)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Hit_React)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Death)
 
 // GameplayCue Tags //
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_BloodPact_BloodyBlades)

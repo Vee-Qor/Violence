@@ -25,6 +25,8 @@ UE_DEFINE_GAMEPLAY_TAG(Common_Ability_PrimaryAttack, "Common.Ability.PrimaryAtta
 UE_DEFINE_GAMEPLAY_TAG(Common_Ability_StanceShift, "Common.Ability.StanceShift")
 UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Jump, "Common.Ability.Jump")
 UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Jump_Cooldown, "Common.Ability.Jump.Cooldown")
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Hit_React, "Common.Ability.Hit.React")
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Death, "Common.Ability.Death")
 
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_Combat, "Common.Status.Combat")
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_Travel, "Common.Status.Travel")
@@ -33,6 +35,7 @@ UE_DEFINE_GAMEPLAY_TAG(Common_Status_InAir, "Common.Status.InAir")
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_Attacking, "Common.Status.Attacking")
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_StanceShifting, "Common.Status.StanceShifting")
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_Casting, "Common.Status.Casting")
+UE_DEFINE_GAMEPLAY_TAG(Common_Status_Dead, "Common.Status.Dead")
 
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_AttackTrace, "Common.Event.AttackTrace")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_CanAttack, "Common.Event.CanAttack")
@@ -40,6 +43,7 @@ UE_DEFINE_GAMEPLAY_TAG(Common_Event_ResetAttack, "Common.Event.ResetAttack")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_StanceShift, "Common.Event.StanceShift")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_BuffApplied, "Common.Event.BuffApplied")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_Hit_React, "Common.Event.Hit.React")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_Death, "Common.Event.Death")
 
 // GameplayCue Tags //
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_BloodPact_Bloody, "GameplayCue.BloodPact.BloodyBlades")

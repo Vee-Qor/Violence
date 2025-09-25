@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Characters/VCharacter.h"
 #include "VGameplayTags.h"
 
 UVGA_Melee::UVGA_Melee()
@@ -37,54 +38,47 @@ void UVGA_Melee::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
         return;
     }
 
-    if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+    if (!HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo)) return;
+
+    if (GetWorld() && ComboResetTimerHandle.IsValid())
     {
-        if (GetWorld() && ComboResetTimerHandle.IsValid())
-        {
-            GetWorld()->GetTimerManager().ClearTimer(ComboResetTimerHandle);
-        }
-
-        if (ComboIndex >= MeleeAttackMontages.Num())
-        {
-            ResetCombo();
-        }
-
-        UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontages = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
-            MeleeAttackMontages[ComboIndex], GetCachedAttackSpeed(), NAME_None, false);
-        if (PlayPrimaryAttackMontages)
-        {
-            PlayPrimaryAttackMontages->OnCompleted.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
-            PlayPrimaryAttackMontages->OnCancelled.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
-            PlayPrimaryAttackMontages->OnBlendOut.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
-            PlayPrimaryAttackMontages->OnInterrupted.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
-            PlayPrimaryAttackMontages->ReadyForActivation();
-
-            ComboIndex++;
-        }
-
-        UAbilityTask_WaitGameplayEvent* WaitCanAttackEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_CanAttack);
-        if (WaitCanAttackEvent)
-        {
-            WaitCanAttackEvent->EventReceived.AddDynamic(this, &UVGA_Melee::CanAttackTagEventReceived);
-            WaitCanAttackEvent->ReadyForActivation();
-        }
+        GetWorld()->GetTimerManager().ClearTimer(ComboResetTimerHandle);
     }
+
+    if (ComboIndex >= MeleeAttackMontages.Num())
+    {
+        ResetCombo();
+    }
+
+    UAbilityTask_PlayMontageAndWait* PlayPrimaryAttackMontages = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
+        MeleeAttackMontages[ComboIndex], GetCachedAttackSpeed(), NAME_None, false);
+    PlayPrimaryAttackMontages->OnCompleted.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+    PlayPrimaryAttackMontages->OnCancelled.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+    PlayPrimaryAttackMontages->OnBlendOut.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+    PlayPrimaryAttackMontages->OnInterrupted.AddDynamic(this, &UVGA_Melee::K2_EndAbility);
+    PlayPrimaryAttackMontages->ReadyForActivation();
+
+    ComboIndex++;
 
     if (K2_HasAuthority())
     {
         UAbilityTask_WaitGameplayEvent* WaitAttackTraceEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_AttackTrace);
-        if (WaitAttackTraceEvent)
-        {
-            WaitAttackTraceEvent->EventReceived.AddDynamic(this, &UVGA_Melee::AttackTraceEventReceived);
-            WaitAttackTraceEvent->ReadyForActivation();
-        }
+        WaitAttackTraceEvent->EventReceived.AddDynamic(this, &UVGA_Melee::AttackTraceEventReceived);
+        WaitAttackTraceEvent->ReadyForActivation();
     }
+
+    UAbilityTask_WaitGameplayEvent* WaitCanAttackEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, VGameplayTags::Common_Event_CanAttack);
+    WaitCanAttackEvent->EventReceived.AddDynamic(this, &UVGA_Melee::CanAttackTagEventReceived);
+    WaitCanAttackEvent->ReadyForActivation();
 }
 
 void UVGA_Melee::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
     const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-    OnTraceTakeHitResults.RemoveAll(this);
+    if (AVCharacter* VCharacter = Cast<AVCharacter>(GetAvatarActorFromActorInfo()))
+    {
+        VCharacter->OnTraceTakeHitResults.RemoveAll(this);
+    }
 
     Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
@@ -103,10 +97,18 @@ void UVGA_Melee::AttackTraceEventReceived(FGameplayEventData EventData)
 {
     StartTraceTimer(EventData, TraceSphereRadius);
 
-    OnTraceTakeHitResults.AddUObject(this, &UVGA_Melee::TraceTakeResults);
+    if (AVCharacter* VCharacter = Cast<AVCharacter>(GetAvatarActorFromActorInfo()))
+    {
+        VCharacter->OnTraceTakeHitResults.AddUObject(this, &UVGA_Melee::TraceTakeResults);
+    }
 }
 
 void UVGA_Melee::TraceTakeResults(const TArray<FHitResult>& HitResults) const
 {
     ApplyDamageFromHitResults(HitResults, DamageEffect);
+}
+
+void UVGA_Melee::CanAttackTagEventReceived(FGameplayEventData EventData)
+{
+    K2_EndAbility();
 }

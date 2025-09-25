@@ -29,8 +29,8 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "HitReact|Animation")
     TMap<EVHitReactSides, UAnimMontage*> HitReactMap;
 
-    UPROPERTY()
+    UPROPERTY(Transient)
     UAnimMontage* SelectedHitReactMontage;
 
-    void SelectHitReactMontage(const FGameplayEventData& TriggerEventData);
+    void SelectHitReactMontage(const FGameplayEventData* TriggerEventData);
 };

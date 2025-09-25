@@ -13,6 +13,8 @@ class UVAttributeSet;
 class UVDefaultAbilitySet;
 struct FOnAttributeChangeData;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTraceTakeHitResultsSignature, const TArray<FHitResult>& /*HitResults*/);
+
 UCLASS()
 class AVCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
@@ -20,6 +22,7 @@ class AVCharacter : public ACharacter, public IAbilitySystemInterface, public IG
 
 public:
     AVCharacter();
+    FOnTraceTakeHitResultsSignature OnTraceTakeHitResults;
     virtual void OnRep_PlayerState() override;
     void ServerInitial();
     void ClientInitial();
@@ -27,6 +30,9 @@ public:
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
     virtual UVAbilitySystemComponent* GetVAbilitySystemComponent() const;
     virtual FGenericTeamId GetGenericTeamId() const override;
+
+    void SetRagdollState(const bool bNewState);
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
     virtual void BeginPlay() override;
@@ -42,4 +48,11 @@ private:
     UVDefaultAbilitySet* CharacterAbilitySet;
 
     void MovementSpeedChanged(const FOnAttributeChangeData& ChangeData);
+    void HealthChanged(const FOnAttributeChangeData& ChangeData);
+    
+    UPROPERTY(ReplicatedUsing = OnRep_IsRagdoll)
+    bool bIsRagdoll;
+
+    UFUNCTION()
+    void OnRep_IsRagdoll();
 };

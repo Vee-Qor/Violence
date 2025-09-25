@@ -44,6 +44,12 @@ void AVAIController::OnPossess(APawn* InPawn)
     InitCrowdSettings();
 }
 
+void AVAIController::SetAllSenseEnabled(bool bEnable) const
+{
+    if (!AIPerceptionComponent) return;
+    AIPerceptionComponent->SetSenseEnabled(UAISense_Sight::StaticClass(), bEnable);
+}
+
 void AVAIController::TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
     UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();

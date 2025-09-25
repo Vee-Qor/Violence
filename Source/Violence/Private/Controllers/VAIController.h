@@ -18,6 +18,7 @@ class AVAIController : public AAIController
 public:
     AVAIController(const FObjectInitializer& ObjectInitializer);
     virtual void OnPossess(APawn* InPawn) override;
+    void SetAllSenseEnabled(bool bEnable) const;
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "AI")

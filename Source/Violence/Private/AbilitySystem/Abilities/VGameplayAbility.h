@@ -8,7 +8,6 @@
 
 class AVCharacter;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTraceTakeHitResultsSignature, const TArray<FHitResult>& /*HitResults*/);
 
 UCLASS()
 class UVGameplayAbility : public UGameplayAbility
@@ -30,14 +29,10 @@ private:
 
     void AttackSpeedChanged(const FOnAttributeChangeData& ChangeData);
 
-    /******* Sword Attack *******/
+    /******* Attack Trace *******/
 protected:
-    FOnTraceTakeHitResultsSignature OnTraceTakeHitResults;
     void StartTraceTimer(const FGameplayEventData& EventData, const float SphereRadius);
     void ApplyDamageFromHitResults(const TArray<FHitResult>& HitResults, const TSubclassOf<UGameplayEffect>& DamageEffect) const;
-
-    UFUNCTION()
-    virtual void CanAttackTagEventReceived(FGameplayEventData EventData);
 
 private:
     void PerformTraceStep(const float SphereRadius, const uint8 MaxTraces);

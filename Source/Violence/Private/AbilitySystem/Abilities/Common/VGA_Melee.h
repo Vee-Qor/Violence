@@ -36,6 +36,9 @@ private:
     void ResetCombo();
 
     UFUNCTION()
+    void CanAttackTagEventReceived(FGameplayEventData EventData);
+
+    UFUNCTION()
     void AttackTraceEventReceived(FGameplayEventData EventData);
 
     void TraceTakeResults(const TArray<FHitResult>& HitResults) const;

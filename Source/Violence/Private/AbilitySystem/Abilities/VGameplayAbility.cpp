@@ -7,7 +7,6 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/VAttributeSet.h"
 #include "Characters/VCharacter.h"
-#include "VGameplayTags.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UVGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -17,12 +16,11 @@ void UVGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, 
     if (!IsInstantiated()) return;
 
     UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
-    if (ASC)
-    {
-        bool bFound = false;
-        CachedAttackSpeed = ASC->GetGameplayAttributeValue(UVAttributeSet::GetAttackSpeedAttribute(), bFound);
-        ASC->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetAttackSpeedAttribute()).AddUObject(this, &UVGameplayAbility::AttackSpeedChanged);
-    }
+    if (!ASC) return;
+
+    bool bFound = false;
+    CachedAttackSpeed = ASC->GetGameplayAttributeValue(UVAttributeSet::GetAttackSpeedAttribute(), bFound);
+    ASC->GetGameplayAttributeValueChangeDelegate(UVAttributeSet::GetAttackSpeedAttribute()).AddUObject(this, &UVGameplayAbility::AttackSpeedChanged);
 }
 
 AVCharacter* UVGameplayAbility::GetVCharacterFromActorInfo() const
@@ -33,11 +31,6 @@ AVCharacter* UVGameplayAbility::GetVCharacterFromActorInfo() const
     }
 
     return nullptr;
-}
-
-void UVGameplayAbility::CanAttackTagEventReceived(FGameplayEventData EventData)
-{
-    K2_EndAbility();
 }
 
 void UVGameplayAbility::AttackSpeedChanged(const FOnAttributeChangeData& ChangeData)
@@ -53,7 +46,7 @@ void UVGameplayAbility::StartTraceTimer(const FGameplayEventData& EventData, con
     uint8 MaxTraces = 0;
     TraceStepIndex = 0;
 
-    USkeletalMeshComponent* SkeletalMeshComponent = GetOwningComponentFromActorInfo();
+    const USkeletalMeshComponent* SkeletalMeshComponent = GetOwningComponentFromActorInfo();
     if (!SkeletalMeshComponent) return;
 
     for (const TSharedPtr<FGameplayAbilityTargetData>& TargetData : EventData.TargetData.Data)
@@ -78,33 +71,11 @@ void UVGameplayAbility::StartTraceTimer(const FGameplayEventData& EventData, con
     const float TraceInterval = TotalDuration / MaxTraces;
     const float TraceFirstDelay = TraceInterval;
 
-    if (GetWorld())
-    {
-        const FTimerDelegate TimerDel = FTimerDelegate::CreateUObject(this, &UVGameplayAbility::PerformTraceStep, SphereRadius, MaxTraces);
-        GetWorld()->GetTimerManager().SetTimer(SwordTimerHandle, TimerDel, TraceInterval, true, TraceFirstDelay);
-    }
-}
+    const UWorld* World = GetWorld();
+    if (!World) return;
 
-void UVGameplayAbility::ApplyDamageFromHitResults(const TArray<FHitResult>& HitResults, const TSubclassOf<UGameplayEffect>& DamageEffect) const
-{
-    for (const FHitResult& HitResult : HitResults)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("HitActor: %s"), *HitResult.GetActor()->GetName());
-
-        FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
-
-        FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
-        EffectContextHandle.AddHitResult(HitResult);
-        EffectSpecHandle.Data->SetContext(EffectContextHandle);
-
-        ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle,
-            UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
-
-        FGameplayEventData EventData;
-        EventData.ContextHandle = EffectContextHandle;
-
-        UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitResult.GetActor(), VGameplayTags::Common_Event_Hit_React, EventData);
-    }
+    const FTimerDelegate TimerDel = FTimerDelegate::CreateUObject(this, &UVGameplayAbility::PerformTraceStep, SphereRadius, MaxTraces);
+    World->GetTimerManager().SetTimer(SwordTimerHandle, TimerDel, TraceInterval, true, TraceFirstDelay);
 }
 
 void UVGameplayAbility::PerformTraceStep(const float SphereRadius, const uint8 MaxTraces)
@@ -116,25 +87,29 @@ void UVGameplayAbility::PerformTraceStep(const float SphereRadius, const uint8 M
         return;
     }
 
-    USkeletalMeshComponent* SkeletalMeshComponent = GetOwningComponentFromActorInfo();
+    const USkeletalMeshComponent* SkeletalMeshComponent = GetOwningComponentFromActorInfo();
     if (!SkeletalMeshComponent) return;
 
     TArray<FHitResult> HitResults;
 
     for (auto& Elem : PrevSocketLocations)
     {
-        FName SocketName = Elem.Key;
-        FVector PrevLocation = Elem.Value;
-        FVector CurrentLocation = SkeletalMeshComponent->GetSocketLocation(SocketName);
+        const FName SocketName = Elem.Key;
+        const FVector PrevLocation = Elem.Value;
+        const FVector CurrentLocation = SkeletalMeshComponent->GetSocketLocation(SocketName);
 
-        TArray<FHitResult> StepResults = DoTraceAndGetUniqueActors(PrevLocation, CurrentLocation, SphereRadius, HitActors);
+        const TArray<FHitResult> StepResults = DoTraceAndGetUniqueActors(PrevLocation, CurrentLocation, SphereRadius, HitActors);
         HitResults.Append(StepResults);
 
         Elem.Value = CurrentLocation;
     }
 
     TraceStepIndex++;
-    OnTraceTakeHitResults.Broadcast(HitResults);
+
+    const AVCharacter* VCharacter = Cast<AVCharacter>(GetAvatarActorFromActorInfo());
+    if (!VCharacter) return;
+
+    VCharacter->OnTraceTakeHitResults.Broadcast(HitResults);
 }
 
 TArray<FHitResult> UVGameplayAbility::DoTraceAndGetUniqueActors(const FVector& TraceStart, const FVector& TraceEnd, const float TraceSphereRadius,
@@ -148,7 +123,7 @@ TArray<FHitResult> UVGameplayAbility::DoTraceAndGetUniqueActors(const FVector& T
     TArray<AActor*> IgnoredActors;
     IgnoredActors.Add(GetAvatarActorFromActorInfo());
 
-    EDrawDebugTrace::Type DrawDebug = bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
+    const EDrawDebugTrace::Type DrawDebug = bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
     TArray<FHitResult> HitResults;
 
@@ -163,4 +138,21 @@ TArray<FHitResult> UVGameplayAbility::DoTraceAndGetUniqueActors(const FVector& T
     }
 
     return OutResults;
+}
+
+void UVGameplayAbility::ApplyDamageFromHitResults(const TArray<FHitResult>& HitResults, const TSubclassOf<UGameplayEffect>& DamageEffect) const
+{
+    for (const FHitResult& HitResult : HitResults)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("HitActor: %s"), *HitResult.GetActor()->GetName());
+
+        const FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo));
+
+        FGameplayEffectContextHandle EffectContextHandle = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
+        EffectContextHandle.AddHitResult(HitResult);
+        EffectSpecHandle.Data->SetContext(EffectContextHandle);
+
+        ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle,
+            UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
+    }
 }

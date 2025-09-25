@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/Common/VGA_HitReact.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "VGameplayTags.h"
 
@@ -10,6 +11,9 @@ UVGA_HitReact::UVGA_HitReact()
 {
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerExecution;
     NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::ServerInitiated;
+
+    SetAssetTags(VGameplayTags::Common_Ability_Hit_React.GetTag().GetSingleTagContainer());
+    ActivationBlockedTags.AddTag(VGameplayTags::Common_Status_Dead);
 
     FAbilityTriggerData TriggerData;
     TriggerData.TriggerTag = VGameplayTags::Common_Event_Hit_React;
@@ -22,40 +26,47 @@ void UVGA_HitReact::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+    check(HitReactMap.Num() > 0);
+
     if (!K2_CommitAbility())
     {
         K2_EndAbility();
         return;
     }
 
-    SelectHitReactMontage(*TriggerEventData);
+    SelectHitReactMontage(TriggerEventData);
 
     if (SelectedHitReactMontage)
     {
         UAbilityTask_PlayMontageAndWait* PlaySelectedHitReactMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
             SelectedHitReactMontage);
-        if (PlaySelectedHitReactMontage)
-        {
-            PlaySelectedHitReactMontage->OnCompleted.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
-            PlaySelectedHitReactMontage->OnCancelled.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
-            PlaySelectedHitReactMontage->OnBlendOut.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
-            PlaySelectedHitReactMontage->OnInterrupted.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
-            PlaySelectedHitReactMontage->ReadyForActivation();
-        }
+        PlaySelectedHitReactMontage->OnCompleted.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
+        PlaySelectedHitReactMontage->OnCancelled.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
+        PlaySelectedHitReactMontage->OnBlendOut.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
+        PlaySelectedHitReactMontage->OnInterrupted.AddDynamic(this, &UVGA_HitReact::K2_EndAbility);
+        PlaySelectedHitReactMontage->ReadyForActivation();
     }
-
 }
 
-void UVGA_HitReact::SelectHitReactMontage(const FGameplayEventData& TriggerEventData)
+void UVGA_HitReact::SelectHitReactMontage(const FGameplayEventData* TriggerEventData)
 {
-    const AActor* AvatarActor = GetAvatarActorFromActorInfo();
-    const FHitResult* HitResult = TriggerEventData.ContextHandle.GetHitResult();
-    const AActor* HitActor = HitResult->GetActor();
-    if (!HitActor || HitActor != AvatarActor) return;
+    const FHitResult* HitResult = nullptr;
+    const AActor* Actor = GetAvatarActorFromActorInfo();
 
-    FVector ImpactDirection = HitResult->ImpactPoint - HitActor->GetActorLocation();
+    if (TriggerEventData && TriggerEventData->ContextHandle.IsValid())
+    {
+        HitResult = TriggerEventData->ContextHandle.GetHitResult();
+    }
+
+    if (!HitResult || !Actor)
+    {
+        SelectedHitReactMontage = HitReactMap.begin().Value();
+        return;
+    }
+
+    FVector ImpactDirection = HitResult->ImpactPoint - Actor->GetActorLocation();
     ImpactDirection.Z = 0.0f;
-    ImpactDirection = AvatarActor->GetActorTransform().InverseTransformVector(ImpactDirection);
+    ImpactDirection = Actor->GetActorTransform().InverseTransformVector(ImpactDirection);
     ImpactDirection.Normalize();
 
     const FVector Forward(1.0f, 0.0f, 0.0f);
@@ -76,4 +87,8 @@ void UVGA_HitReact::SelectHitReactMontage(const FGameplayEventData& TriggerEvent
     }
 
     SelectedHitReactMontage = HitReactMap.FindRef(LocalSide);
+    if (!SelectedHitReactMontage)
+    {
+        SelectedHitReactMontage = HitReactMap.begin().Value();
+    }
 }
