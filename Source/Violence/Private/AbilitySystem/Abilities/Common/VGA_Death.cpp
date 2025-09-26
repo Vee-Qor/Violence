@@ -5,7 +5,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "BrainComponent.h"
 #include "Characters/VCharacter.h"
 #include "Controllers/VAIController.h"
@@ -33,6 +32,7 @@ void UVGA_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
     check(DeathMontages.Num() > 0);
     ensureAlwaysMsgf(DeathEffect, TEXT("DeathEffect is empty in: %s"), *GetName());
+    ensureAlwaysMsgf(DeathDissolveCueTag.IsValid(), TEXT("DeathDissolveCueTag is empty in: %s "), *GetName());
 
     if (!K2_CommitAbility())
     {
@@ -48,11 +48,11 @@ void UVGA_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
         UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
             SelectedDeathMontage);
+        PlayDeathMontage->OnCompleted.AddDynamic(this, &UVGA_Death::EndDeath);
+        PlayDeathMontage->OnCancelled.AddDynamic(this, &UVGA_Death::EndDeath);
+        PlayDeathMontage->OnBlendOut.AddDynamic(this, &UVGA_Death::EndDeath);
+        PlayDeathMontage->OnInterrupted.AddDynamic(this, &UVGA_Death::EndDeath);
         PlayDeathMontage->ReadyForActivation();
-
-        UAbilityTask_WaitDelay* WaitEndDeathMontage = UAbilityTask_WaitDelay::WaitDelay(this, SelectedDeathMontage->GetPlayLength());
-        WaitEndDeathMontage->OnFinish.AddDynamic(this, &UVGA_Death::EndDeath);
-        WaitEndDeathMontage->ReadyForActivation();
     }
 
 }
@@ -102,5 +102,7 @@ void UVGA_Death::EndDeath()
         VCharacter->SetRagdollState(true);
     }
 
+    K2_ExecuteGameplayCue(DeathDissolveCueTag, MakeEffectContext(CurrentSpecHandle, CurrentActorInfo));
+    
     K2_EndAbility();
 }

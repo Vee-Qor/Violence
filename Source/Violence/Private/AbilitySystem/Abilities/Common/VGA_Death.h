@@ -23,6 +23,9 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Death|Effects")
     TSubclassOf<UGameplayEffect> DeathEffect;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Death|VFX", meta = (Categories = "GameplayCue"))
+    FGameplayTag DeathDissolveCueTag;
+
     UPROPERTY(Transient)
     UAnimMontage* SelectedDeathMontage;
 

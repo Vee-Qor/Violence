@@ -122,6 +122,7 @@ void AVCharacter::OnRep_IsRagdoll()
     SkeletalMesh->SetCollisionEnabled(bIsRagdoll ? ECollisionEnabled::PhysicsOnly : ECollisionEnabled::NoCollision);
     SkeletalMesh->SetSimulatePhysics(bIsRagdoll);
     SkeletalMesh->bPauseAnims = true;
+    SkeletalMesh->bWaitForParallelClothTask = true;
 }
 
 void AVCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const

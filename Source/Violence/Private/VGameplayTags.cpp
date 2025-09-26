@@ -51,5 +51,8 @@ UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_CameraShake, "GameplayCue.Hit.CameraShake
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact, "GameplayCue.Hit.Impact")
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact_QoP, "GameplayCue.Hit.Impact.QoP")
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact_BuffBlack, "GameplayCue.Hit.Impact.BuffBlack")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Death_Dissolve, "GameplayCue.Death.Dissolve")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Death_Dissolve_QoP, "GameplayCue.Death.Dissolve.QoP")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Death_Dissolve_BuffBlack, "GameplayCue.Death.Dissolve.BuffBlack")
 
 }
