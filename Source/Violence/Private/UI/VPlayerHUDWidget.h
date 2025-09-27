@@ -6,7 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "VPlayerHUDWidget.generated.h"
 
+class UVDeathWidget;
 class UVValueGaugeWidget;
+struct FGameplayTag;
 
 UCLASS()
 class UVPlayerHUDWidget : public UUserWidget
@@ -22,4 +24,12 @@ private:
 
     UPROPERTY(meta=(BindWidget))
     UVValueGaugeWidget* ResourceGaugeWidget;
+
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UVDeathWidget> DeathWidgetClass;
+
+    UPROPERTY()
+    UVDeathWidget* DeathWidget;
+
+    void StatusDeadTagUpdated(const FGameplayTag, int32 NewCount);
 };

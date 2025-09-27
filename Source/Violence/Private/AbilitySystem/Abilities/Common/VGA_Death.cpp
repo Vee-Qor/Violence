@@ -3,12 +3,13 @@
 
 #include "AbilitySystem/Abilities/Common/VGA_Death.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "BrainComponent.h"
 #include "Characters/VCharacter.h"
 #include "Controllers/VAIController.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "VGameplayTags.h"
 
 UVGA_Death::UVGA_Death()
@@ -32,7 +33,7 @@ void UVGA_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
     check(DeathMontages.Num() > 0);
     ensureAlwaysMsgf(DeathEffect, TEXT("DeathEffect is empty in: %s"), *GetName());
-    ensureAlwaysMsgf(DeathDissolveCueTag.IsValid(), TEXT("DeathDissolveCueTag is empty in: %s "), *GetName());
+    ensureAlwaysMsgf(DissolveCueTag.IsValid(), TEXT("DeathDissolveCueTag is empty in: %s "), *GetName());
 
     if (!K2_CommitAbility())
     {
@@ -48,13 +49,12 @@ void UVGA_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
         UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, NAME_None,
             SelectedDeathMontage);
-        PlayDeathMontage->OnCompleted.AddDynamic(this, &UVGA_Death::EndDeath);
-        PlayDeathMontage->OnCancelled.AddDynamic(this, &UVGA_Death::EndDeath);
-        PlayDeathMontage->OnBlendOut.AddDynamic(this, &UVGA_Death::EndDeath);
-        PlayDeathMontage->OnInterrupted.AddDynamic(this, &UVGA_Death::EndDeath);
+        PlayDeathMontage->OnCompleted.AddDynamic(this, &UVGA_Death::EnableRagdoll);
+        PlayDeathMontage->OnCancelled.AddDynamic(this, &UVGA_Death::EnableRagdoll);
+        PlayDeathMontage->OnBlendOut.AddDynamic(this, &UVGA_Death::EnableRagdoll);
+        PlayDeathMontage->OnInterrupted.AddDynamic(this, &UVGA_Death::EnableRagdoll);
         PlayDeathMontage->ReadyForActivation();
     }
-
 }
 
 void UVGA_Death::SelectDeathMontage()
@@ -69,19 +69,17 @@ void UVGA_Death::SelectDeathMontage()
 
 void UVGA_Death::ApplyDeathState()
 {
-    if (K2_HasAuthority())
-    {
-        UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
-        if (!ASC) return;
+    FGameplayCueParameters CueParams;
+    CueParams.RawMagnitude = DissolveDuration;
+    CueParams.EffectContext = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
+    K2_ExecuteGameplayCueWithParams(DissolveCueTag, CueParams);
 
-        ASC->BP_ApplyGameplayEffectToSelf(DeathEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo), ASC->MakeEffectContext());
-    }
+    UAbilityTask_WaitDelay* WaitEndDeathMontage = UAbilityTask_WaitDelay::WaitDelay(this, DissolveDuration);
+    WaitEndDeathMontage->OnFinish.AddDynamic(this, &UVGA_Death::DissolveEnd);
+    WaitEndDeathMontage->ReadyForActivation();
 
     ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo());
     if (!Character) return;
-
-    Character->GetCharacterMovement()->DisableMovement();
-    Character->GetCharacterMovement()->StopMovementImmediately();
 
     if (APlayerController* PlayerController = Character->GetController<APlayerController>())
     {
@@ -95,14 +93,23 @@ void UVGA_Death::ApplyDeathState()
     VAIController->SetAllSenseEnabled(false);
 }
 
-void UVGA_Death::EndDeath()
+void UVGA_Death::EnableRagdoll()
 {
     if (AVCharacter* VCharacter = GetVCharacterFromActorInfo())
     {
         VCharacter->SetRagdollState(true);
     }
+}
 
-    K2_ExecuteGameplayCue(DeathDissolveCueTag, MakeEffectContext(CurrentSpecHandle, CurrentActorInfo));
-    
-    K2_EndAbility();
+void UVGA_Death::DissolveEnd()
+{
+    if (K2_HasAuthority())
+    {
+        UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+        if (!ASC) return;
+
+        ASC->BP_ApplyGameplayEffectToSelf(DeathEffect, GetAbilityLevel(CurrentSpecHandle, CurrentActorInfo), ASC->MakeEffectContext());
+    }
+
+    EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

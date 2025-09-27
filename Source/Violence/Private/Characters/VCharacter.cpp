@@ -48,6 +48,13 @@ void AVCharacter::ClientInitial()
     AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
+void AVCharacter::Server_RequestRespawn_Implementation()
+{
+    if (!AbilitySystemComponent || !AbilitySystemComponent->HasMatchingGameplayTag(VGameplayTags::Common_Status_Dead)) return;
+
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, VGameplayTags::Common_Event_Respawn, FGameplayEventData{});
+}
+
 UAbilitySystemComponent* AVCharacter::GetAbilitySystemComponent() const
 {
     return GetVAbilitySystemComponent();
@@ -74,6 +81,8 @@ FGenericTeamId AVCharacter::GetGenericTeamId() const
 void AVCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    MeshRelativeTransform = GetMesh()->GetRelativeTransform();
 }
 
 void AVCharacter::MovementSpeedChanged(const FOnAttributeChangeData& ChangeData)
@@ -114,15 +123,16 @@ void AVCharacter::SetRagdollState(const bool bNewState)
 
 void AVCharacter::OnRep_IsRagdoll()
 {
-    UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
-    USkeletalMeshComponent* SkeletalMesh = GetMesh();
-    if (!SkeletalMesh || !CapsuleComp) return;
+    if (!GetMesh() || !GetCapsuleComponent()) return;
 
-    CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    SkeletalMesh->SetCollisionEnabled(bIsRagdoll ? ECollisionEnabled::PhysicsOnly : ECollisionEnabled::NoCollision);
-    SkeletalMesh->SetSimulatePhysics(bIsRagdoll);
-    SkeletalMesh->bPauseAnims = true;
-    SkeletalMesh->bWaitForParallelClothTask = true;
+    GetCharacterMovement()->SetMovementMode(bIsRagdoll ? MOVE_None : MOVE_Walking);
+    GetCapsuleComponent()->SetCollisionEnabled(bIsRagdoll ? ECollisionEnabled::NoCollision : ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->bPauseAnims = bIsRagdoll;
+    GetMesh()->bWaitForParallelClothTask = bIsRagdoll;
+    GetMesh()->SetSimulatePhysics(bIsRagdoll);
+    GetMesh()->SetCollisionEnabled(bIsRagdoll ? ECollisionEnabled::PhysicsOnly : ECollisionEnabled::NoCollision);
+
+    if (!bIsRagdoll) GetMesh()->SetRelativeTransform(MeshRelativeTransform);
 }
 
 void AVCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const

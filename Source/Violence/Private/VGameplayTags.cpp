@@ -27,6 +27,7 @@ UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Jump, "Common.Ability.Jump")
 UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Jump_Cooldown, "Common.Ability.Jump.Cooldown")
 UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Hit_React, "Common.Ability.Hit.React")
 UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Death, "Common.Ability.Death")
+UE_DEFINE_GAMEPLAY_TAG(Common_Ability_Respawn, "Common.Ability.Respawn")
 
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_Combat, "Common.Status.Combat")
 UE_DEFINE_GAMEPLAY_TAG(Common_Status_Travel, "Common.Status.Travel")
@@ -44,6 +45,7 @@ UE_DEFINE_GAMEPLAY_TAG(Common_Event_StanceShift, "Common.Event.StanceShift")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_BuffApplied, "Common.Event.BuffApplied")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_Hit_React, "Common.Event.Hit.React")
 UE_DEFINE_GAMEPLAY_TAG(Common_Event_Death, "Common.Event.Death")
+UE_DEFINE_GAMEPLAY_TAG(Common_Event_Respawn, "Common.Event.Respawn")
 
 // GameplayCue Tags //
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_BloodPact_Bloody, "GameplayCue.BloodPact.BloodyBlades")
@@ -54,5 +56,8 @@ UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Hit_Impact_BuffBlack, "GameplayCue.Hit.Impact
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Death_Dissolve, "GameplayCue.Death.Dissolve")
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Death_Dissolve_QoP, "GameplayCue.Death.Dissolve.QoP")
 UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Death_Dissolve_BuffBlack, "GameplayCue.Death.Dissolve.BuffBlack")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Respawn_Dissolve, "GameplayCue.Respawn.Dissolve")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Respawn_Dissolve_QoP, "GameplayCue.Respawn.Dissolve.QoP")
+UE_DEFINE_GAMEPLAY_TAG(GameplayCue_Respawn_Dissolve_BuffBlack, "GameplayCue.Respawn.Dissolve.BuffBlack")
 
 }

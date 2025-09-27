@@ -27,6 +27,9 @@ public:
     void ServerInitial();
     void ClientInitial();
 
+    UFUNCTION(Server, Reliable)
+    void Server_RequestRespawn();
+
     virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
     virtual UVAbilitySystemComponent* GetVAbilitySystemComponent() const;
     virtual FGenericTeamId GetGenericTeamId() const override;
@@ -55,4 +58,6 @@ private:
 
     UFUNCTION()
     void OnRep_IsRagdoll();
+
+    FTransform MeshRelativeTransform;
 };

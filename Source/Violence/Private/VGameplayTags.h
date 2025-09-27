@@ -28,6 +28,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Jump)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Jump_Cooldown)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Hit_React)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Death)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Ability_Respawn)
 
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Combat)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Travel)
@@ -45,6 +46,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_StanceShift)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_BuffApplied)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Hit_React)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Death)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Respawn)
 
 // GameplayCue Tags //
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_BloodPact_BloodyBlades)
@@ -55,5 +57,8 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Hit_Impact_BuffBlack)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Death_Dissolve)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Death_Dissolve_QoP)
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Death_Dissolve_BuffBlack)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Respawn_Dissolve)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Respawn_Dissolve_QoP)
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayCue_Respawn_Dissolve_BuffBlack)
 
 }

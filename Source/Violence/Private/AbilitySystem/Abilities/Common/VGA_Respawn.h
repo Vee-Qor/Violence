@@ -4,40 +4,36 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/VGameplayAbility.h"
-#include "VGA_Death.generated.h"
+#include "VGA_Respawn.generated.h"
 
 UCLASS()
-class UVGA_Death : public UVGameplayAbility
+class UVGA_Respawn : public UVGameplayAbility
 {
     GENERATED_BODY()
 
 public:
-    UVGA_Death();
+    UVGA_Respawn();
     virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
         const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 private:
-    UPROPERTY(EditDefaultsOnly, Category = "Death|Animation")
-    TArray<UAnimMontage*> DeathMontages;
+    UPROPERTY(EditDefaultsOnly, Category = "Respawn|Animation")
+    UAnimMontage* RespawnMontage;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Death|Effects")
-    TSubclassOf<UGameplayEffect> DeathEffect;
+    UPROPERTY(EditDefaultsOnly, Category = "Respawn|Effects")
+    TSubclassOf<UGameplayEffect> RespawnEffect;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Respawn|Effects")
+    TSubclassOf<UGameplayEffect> DeadEffectToRemove;
 
     UPROPERTY(EditDefaultsOnly, Category = "Death|VFX", meta = (Categories = "GameplayCue"))
-    FGameplayTag DissolveCueTag;
+    FGameplayTag RespawnDissolveCueTag;
 
     UPROPERTY(EditDefaultsOnly, Category = "Death|VFX")
-    float DissolveDuration = 3.0f;
+    float DissolveDuration = 1.0f;
 
-    UPROPERTY(Transient)
-    UAnimMontage* SelectedDeathMontage;
-
-    void SelectDeathMontage();
-    void ApplyDeathState();
+    void ApplyRespawnState();
 
     UFUNCTION()
-    void EnableRagdoll();
-
-    UFUNCTION()
-    void DissolveEnd();
+    void EnableInput();
 };
